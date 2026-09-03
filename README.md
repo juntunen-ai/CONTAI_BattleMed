@@ -10,8 +10,8 @@ protocol cards with spoken read-back, and the handover packet.
 
 1. Open `MedicalAI.xcodeproj` in Xcode 16 or later.
 2. Select the **MedicalAI** scheme and your iPhone as the destination.
-3. Signing & Capabilities → set **Team** to your Apple ID and change the bundle
-   identifier from `com.example.medicalai` to something unique.
+3. Signing is already set: team `647W3RAYL3`, bundle `ai.juntunen.medicalai`.
+   Forks should change the bundle id and team.
 4. Run. On the phone, Settings → General → VPN & Device Management → trust the
    developer certificate.
 
