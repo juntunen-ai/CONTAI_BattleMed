@@ -78,6 +78,8 @@ struct RootView: View {
                 .frame(width: 128, alignment: .leading)
                 .padding(.horizontal, 12)
         }
+        .frame(height: 56)
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     private var tabBar: some View {
@@ -87,8 +89,7 @@ struct RootView: View {
                     Text(label.uppercased())
                         .font(.label(12))
                         .tracking(0.8)
-                        .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .center)
-                        .padding(.horizontal, 4)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .foregroundStyle(tab == id ? Ink.ground : Ink.mid)
                         .background(tab == id ? Ink.accent : Color.clear)
                 }
@@ -99,12 +100,16 @@ struct RootView: View {
                 Text("OFF")
                     .font(.label(12))
                     .tracking(0.8)
-                    .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .center)
-                    .padding(.horizontal, 4)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .foregroundStyle(Ink.dim)
             }
             .buttonStyle(.plain)
         }
+        .frame(maxWidth: .infinity)
+        .frame(height: 56)
+        .padding(.bottom, 10)
+        .background(Ink.ground)
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
