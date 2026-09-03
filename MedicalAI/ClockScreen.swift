@@ -1,0 +1,190 @@
+import SwiftUI
+import CoreHaptics
+import UIKit
+
+struct ClockScreen: View {
+    @EnvironmentObject var clock: MissionClock
+    @EnvironmentObject var ledger: LedgerStore
+    @Binding var openCard: String?
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Kicker(text: "Elapsed since point of injury")
+                    Text(clock.elapsed)
+                        .font(.heavy(64))
+                        .foregroundStyle(Ink.text)
+                        .monospacedDigit()
+                        .padding(.top, 6)
+                    Text(clock.remainingText)
+                        .font(.label(13))
+                        .foregroundStyle(Ink.body)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .overlay(alignment: .bottom) { Rule(strong: true) }
+
+                ForEach(clock.gates) { gate in
+                    GateRow(gate: gate) { tap(gate) }
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Kicker(text: "Missed checks — a deterioration signal")
+                    Text(clock.missedText)
+                        .font(.label(14))
+                        .foregroundStyle(Ink.body)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .overlay(alignment: .top) { Rule(strong: true) }
+            }
+        }
+    }
+
+    private func tap(_ gate: Gate) {
+        UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+        if gate.id == "reposition" {
+            clock.lastReposition = clock.minute
+            ledger.append(minute: clock.minute, name: "Reposition",
+                          detail: "Right lateral, from clock prompt", provenance: .casualty)
+            return
+        }
+        openCard = gate.cardID
+    }
+}
+
+struct GateRow: View {
+    let gate: Gate
+    let action: () -> Void
+
+    private var tone: Color {
+        if gate.locked || gate.overdue { return Ink.accent }
+        return Ink.mid
+    }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 0) {
+                Rectangle().fill(tone).frame(width: 8)
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(gate.name).font(.heavy(17)).foregroundStyle(Ink.text)
+                        Spacer(minLength: 10)
+                        Text(gate.countdown).font(.heavy(17)).foregroundStyle(tone).monospacedDigit()
+                    }
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(gate.citation).font(.label(12)).foregroundStyle(Ink.mid)
+                        Spacer(minLength: 10)
+                        Text(gate.status.uppercased()).font(.label(11)).tracking(1.0).foregroundStyle(tone)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 15)
+            }
+            .frame(minHeight: 76)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .overlay(alignment: .bottom) { Rule() }
+    }
+}
+
+/// Every card ends in an observable OUTCOME, never a step confirmation. The
+/// measured failure mode is a casualty declaring success without checking.
+struct CardScreen: View {
+    @EnvironmentObject var clock: MissionClock
+    @EnvironmentObject var ledger: LedgerStore
+    @EnvironmentObject var voice: VoiceService
+    let card: ProtocolBundle.Card
+    let close: () -> Void
+
+    var body: some View {
+        ZStack {
+            Ink.ground.ignoresSafeArea()
+            VStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Kicker(text: "Outcome gate · blocking", color: Ink.text)
+                    Text(card.name).font(.heavy(24)).foregroundStyle(.white)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .background(Ink.accentDeep)
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text(card.citation.uppercased())
+                            .font(.label(11)).tracking(1.2).foregroundStyle(Ink.dim)
+                        Text(card.question)
+                            .font(.heavy(26)).foregroundStyle(Ink.text)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text(card.note)
+                            .font(.label(15)).foregroundStyle(Ink.body)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        // Read aloud verbatim from the signed bundle, with its
+                        // version on screen. The model never originates this text.
+                        FieldButton(title: voice.armed
+                                    ? (voice.speakingID == card.id ? "Stop reading" : "Read this aloud")
+                                    : "Arm voice above to read aloud",
+                                    enabled: voice.armed) {
+                            voice.speak(id: card.id, text: card.spoken)
+                        }
+                        Text("Bundle \(ProtocolBundle.version) · \(ProtocolBundle.source)")
+                            .font(.label(11)).foregroundStyle(Ink.mid)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+                }
+
+                VStack(spacing: 2) {
+                    FieldButton(title: card.affirm, filled: true) { confirm() }
+                    FieldButton(title: card.deny) { deny() }
+                    Button("Back to clock", action: close)
+                        .font(.label(13))
+                        .foregroundStyle(Ink.mid)
+                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                        .padding(.horizontal, 16)
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+            }
+        }
+    }
+
+    private func confirm() {
+        voice.stopSpeaking()
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        switch card.id {
+        case "tourniquet":
+            clock.tourniquetConverted = true
+            ledger.append(minute: clock.minute, name: "Tourniquet converted",
+                          detail: "Outcome gate passed: bleeding controlled, pressure dressing applied",
+                          provenance: .device, protocolVersion: ProtocolBundle.version)
+        case "splint":
+            clock.lastSplintCheck = clock.minute
+            ledger.append(minute: clock.minute, name: "Splint distal pulse",
+                          detail: "Present, right ankle", provenance: .casualty)
+        case "vitals":
+            clock.lastVitals = clock.minute
+            ledger.append(minute: clock.minute, name: "Vitals session",
+                          detail: "HR 124, RR 26, radial present. SpO₂ signal lost — not imputed.",
+                          provenance: .device)
+        default:
+            ledger.append(minute: clock.minute, name: card.name,
+                          detail: card.affirm + ". Source conflict displayed to user.",
+                          provenance: .protocolAsserted, protocolVersion: ProtocolBundle.version)
+        }
+        close()
+    }
+
+    private func deny() {
+        voice.stopSpeaking()
+        UINotificationFeedbackGenerator().notificationOccurred(.warning)
+        ledger.append(minute: clock.minute, name: "Outcome not confirmed",
+                      detail: "\(card.name): \(card.deny). Added to buddy-contact list.",
+                      provenance: .device)
+        close()
+    }
+}
