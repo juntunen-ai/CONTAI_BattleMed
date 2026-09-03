@@ -52,9 +52,9 @@ struct RootView: View {
             Spacer()
             Text("\(clock.batteryPercent)%").foregroundStyle(Ink.body)
         }
-        .font(.label(12))
+        .font(.label(13))
         .padding(.horizontal, 16)
-        .padding(.vertical, 8)
+        .padding(.vertical, 10)
         .overlay(alignment: .bottom) { Rule() }
     }
 
@@ -64,7 +64,7 @@ struct RootView: View {
                 Text(voice.armed ? "VOICE ARMED FOR THIS SESSION" : "VOICE OFF — TAP TO ARM")
                     .font(.label(13))
                     .tracking(1.0)
-                    .frame(maxWidth: .infinity, minHeight: 60, alignment: .leading)
+                    .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .leading)
                     .padding(.horizontal, 16)
                     .foregroundStyle(voice.armed ? Color.white : Ink.mid)
                     .background(voice.armed ? Ink.accentDeep : Color.clear)
@@ -85,10 +85,10 @@ struct RootView: View {
             ForEach([("clock", "Clock"), ("voice", "Voice"), ("ledger", "Ledger"), ("handover", "Hand-over")], id: \.0) { id, label in
                 Button { tab = id; openCard = nil } label: {
                     Text(label.uppercased())
-                        .font(.label(10))
+                        .font(.label(12))
                         .tracking(0.8)
-                        .frame(maxWidth: .infinity, minHeight: 60, alignment: .leading)
-                        .padding(.horizontal, 8)
+                        .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .center)
+                        .padding(.horizontal, 4)
                         .foregroundStyle(tab == id ? Ink.ground : Ink.mid)
                         .background(tab == id ? Ink.accent : Color.clear)
                 }
@@ -97,10 +97,10 @@ struct RootView: View {
             }
             Button { voice.stopSpeaking(); screenOff = true } label: {
                 Text("OFF")
-                    .font(.label(10))
+                    .font(.label(12))
                     .tracking(0.8)
-                    .frame(maxWidth: .infinity, minHeight: 60, alignment: .leading)
-                    .padding(.horizontal, 8)
+                    .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .center)
+                    .padding(.horizontal, 4)
                     .foregroundStyle(Ink.dim)
             }
             .buttonStyle(.plain)

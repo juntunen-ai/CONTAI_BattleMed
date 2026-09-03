@@ -6,10 +6,10 @@ struct VoiceScreen: View {
     @EnvironmentObject var clock: MissionClock
 
     var body: some View {
-        ScrollView {
+        FillScroll {
             VStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Voice").font(.heavy(26)).foregroundStyle(Ink.text)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Voice").font(.heavy(32)).foregroundStyle(Ink.text)
                     Text("Gemma, on-device · 2 B parameters at 4-bit · weights loaded locally, no network")
                         .font(.label(12)).foregroundStyle(Ink.mid)
                         .fixedSize(horizontal: false, vertical: true)
@@ -20,6 +20,7 @@ struct VoiceScreen: View {
 
                 firewall
                     .padding(16)
+                    .frame(maxHeight: .infinity, alignment: .top)
                     .overlay(alignment: .bottom) { Rule(strong: true) }
 
                 VStack(alignment: .leading, spacing: 0) {
@@ -37,6 +38,7 @@ struct VoiceScreen: View {
 
                 dictation
                     .padding(16)
+                    .frame(maxHeight: .infinity, alignment: .top)
                     .overlay(alignment: .top) { Rule(strong: true) }
             }
         }
@@ -171,7 +173,7 @@ struct SpeakableRow: View {
             .disabled(!voice.armed)
             .padding(.top, 4)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .padding(16)
         .overlay(alignment: .bottom) { Rule() }
     }

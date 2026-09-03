@@ -8,31 +8,37 @@ struct ClockScreen: View {
     @Binding var openCard: String?
 
     var body: some View {
-        ScrollView {
+        FillScroll {
             VStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     Kicker(text: "Elapsed since point of injury")
                     Text(clock.elapsed)
-                        .font(.heavy(64))
+                        .font(.heavy(80))
                         .foregroundStyle(Ink.text)
                         .monospacedDigit()
-                        .padding(.top, 6)
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                        .padding(.top, 4)
                     Text(clock.remainingText)
-                        .font(.label(13))
+                        .font(.label(15))
                         .foregroundStyle(Ink.body)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(16)
+                .frame(maxWidth: .infinity, minHeight: 160, maxHeight: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
                 .overlay(alignment: .bottom) { Rule(strong: true) }
 
                 ForEach(clock.gates) { gate in
                     GateRow(gate: gate) { tap(gate) }
+                        .frame(maxHeight: .infinity)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
                     Kicker(text: "Missed checks — a deterioration signal")
                     Text(clock.missedText)
-                        .font(.label(14))
+                        .font(.label(15))
                         .foregroundStyle(Ink.body)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -68,22 +74,24 @@ struct GateRow: View {
         Button(action: action) {
             HStack(spacing: 0) {
                 Rectangle().fill(tone).frame(width: 8)
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: 6) {
                     HStack(alignment: .firstTextBaseline) {
-                        Text(gate.name).font(.heavy(17)).foregroundStyle(Ink.text)
+                        Text(gate.name).font(.heavy(20)).foregroundStyle(Ink.text)
                         Spacer(minLength: 10)
-                        Text(gate.countdown).font(.heavy(17)).foregroundStyle(tone).monospacedDigit()
+                        Text(gate.countdown).font(.heavy(20)).foregroundStyle(tone).monospacedDigit()
                     }
                     HStack(alignment: .firstTextBaseline) {
-                        Text(gate.citation).font(.label(12)).foregroundStyle(Ink.mid)
+                        Text(gate.citation).font(.label(13)).foregroundStyle(Ink.mid)
                         Spacer(minLength: 10)
-                        Text(gate.status.uppercased()).font(.label(11)).tracking(1.0).foregroundStyle(tone)
+                        Text(gate.status.uppercased()).font(.label(12)).tracking(1.0).foregroundStyle(tone)
                     }
+                    Spacer(minLength: 0)
                 }
                 .padding(.horizontal, 16)
-                .padding(.vertical, 15)
+                .padding(.vertical, 14)
+                .frame(maxHeight: .infinity, alignment: .center)
             }
-            .frame(minHeight: 76)
+            .frame(maxWidth: .infinity, minHeight: 88, maxHeight: .infinity)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -104,27 +112,26 @@ struct CardScreen: View {
         ZStack {
             Ink.ground.ignoresSafeArea()
             VStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     Kicker(text: "Outcome gate · blocking", color: Ink.text)
-                    Text(card.name).font(.heavy(24)).foregroundStyle(.white)
+                    Text(card.name).font(.heavy(28)).foregroundStyle(.white)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(16)
                 .background(Ink.accentDeep)
 
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
+                FillScroll {
+                    VStack(alignment: .leading, spacing: 18) {
                         Text(card.citation.uppercased())
-                            .font(.label(11)).tracking(1.2).foregroundStyle(Ink.dim)
+                            .font(.label(12)).tracking(1.2).foregroundStyle(Ink.dim)
                         Text(card.question)
-                            .font(.heavy(26)).foregroundStyle(Ink.text)
+                            .font(.heavy(28)).foregroundStyle(Ink.text)
                             .fixedSize(horizontal: false, vertical: true)
                         Text(card.note)
-                            .font(.label(15)).foregroundStyle(Ink.body)
+                            .font(.label(16)).foregroundStyle(Ink.body)
                             .fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 12)
 
-                        // Read aloud verbatim from the signed bundle, with its
-                        // version on screen. The model never originates this text.
                         FieldButton(title: voice.armed
                                     ? (voice.speakingID == card.id ? "Stop reading" : "Read this aloud")
                                     : "Arm voice above to read aloud",
@@ -132,9 +139,9 @@ struct CardScreen: View {
                             voice.speak(id: card.id, text: card.spoken)
                         }
                         Text("Bundle \(ProtocolBundle.version) · \(ProtocolBundle.source)")
-                            .font(.label(11)).foregroundStyle(Ink.mid)
+                            .font(.label(12)).foregroundStyle(Ink.mid)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                     .padding(16)
                 }
 
@@ -142,9 +149,9 @@ struct CardScreen: View {
                     FieldButton(title: card.affirm, filled: true) { confirm() }
                     FieldButton(title: card.deny) { deny() }
                     Button("Back to clock", action: close)
-                        .font(.label(13))
+                        .font(.label(14))
                         .foregroundStyle(Ink.mid)
-                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                        .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
                         .padding(.horizontal, 16)
                 }
                 .padding(.horizontal, 16)

@@ -71,3 +71,24 @@ struct FieldButton: View {
         .disabled(!enabled)
     }
 }
+
+/// Fills the remaining screen when content is short; scrolls when it is not.
+/// Extra height is absorbed by children that declare `maxHeight: .infinity`.
+struct FillScroll<Content: View>: View {
+    var content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        GeometryReader { geo in
+            ScrollView {
+                content
+                    .frame(minWidth: geo.size.width, minHeight: geo.size.height, alignment: .top)
+            }
+            .scrollIndicators(.hidden)
+        }
+    }
+}
+

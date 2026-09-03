@@ -7,10 +7,10 @@ struct HandoverScreen: View {
     @EnvironmentObject var voice: VoiceService
 
     var body: some View {
-        ScrollView {
+        FillScroll {
             VStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Handover").font(.heavy(26)).foregroundStyle(Ink.text)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Handover").font(.heavy(32)).foregroundStyle(Ink.text)
                     Text("DD Form 1380 · ATMIST · renders with no model, no watch, no network")
                         .font(.label(12)).foregroundStyle(Ink.mid)
                         .fixedSize(horizontal: false, vertical: true)
@@ -27,7 +27,9 @@ struct HandoverScreen: View {
                         .background(Ink.accentDeep)
                 }
 
-                atmistPanel.padding(16)
+                atmistPanel
+                    .padding(16)
+                    .frame(maxHeight: .infinity, alignment: .top)
 
                 FieldButton(title: voice.armed
                             ? (voice.speakingID == "packet" ? "Stop reading" : "Read packet to the medic")
@@ -91,6 +93,7 @@ struct HandoverScreen: View {
                 .overlay(alignment: .bottom) { Rule() }
             }
         }
+        .frame(maxHeight: .infinity, alignment: .top)
         .overlay { Rectangle().stroke(Ink.dim, lineWidth: 2) }
     }
 
