@@ -84,3 +84,8 @@ or the underlying clinical-safety obligation.
 Fonts: the design system specifies Archivo. Add the `.ttf` files to the target,
 declare them in the Info tab under "Fonts provided by application", and swap the
 two helpers in `Theme.swift` for `.custom("Archivo-...")`.
+
+## License
+
+Proprietary. Copyright © 2026 Harri Juntunen. All rights reserved.
+No third-party use. Commercial use is prohibited. See `LICENSE`.
