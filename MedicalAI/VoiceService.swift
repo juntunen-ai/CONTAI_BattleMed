@@ -1,17 +1,13 @@
 import Foundation
 import AVFoundation
 import Combine
+import Speech
 
-/// Voice output is real: AVSpeechSynthesizer reads fixed protocol strings aloud,
-/// verbatim, with their source and version shown on screen.
+/// Voice output is real: AVSpeechSynthesizer reads fixed protocol strings aloud.
 ///
-/// Voice INPUT is deliberately not wired to SFSpeechRecognizer. Apple's own
-/// documentation instructs developers not to send health data through it, and it
-/// carries a one-minute limit plus per-device daily throttling. The production
-/// path is SpeechAnalyzer + SpeechTranscriber with a custom medical lexicon via
-/// SFCustomLanguageModelData — see `transcribe(...)` below, which is the single
-/// integration point. Until that is wired, dictation degrades explicitly to
-/// touch entry and says so.
+/// Voice input uses SpeechAnalyzer + SpeechTranscriber + SpeechDetector (iOS 26),
+/// on-device. SFSpeechRecognizer is not used for audio. Until the locale model
+/// is installed, or on iOS < 26, dictation degrades explicitly to touch entry.
 @MainActor
 final class VoiceService: NSObject, ObservableObject {
     @Published private(set) var armed = false
@@ -24,29 +20,39 @@ final class VoiceService: NSObject, ObservableObject {
     private let synth = AVSpeechSynthesizer()
     private var rate: Float = 0.46
 
+    private var engine: AVAudioEngine?
+    private var inputContinuation: AsyncStream<AnalyzerInput>.Continuation?
+    private var resultsTask: Task<Void, Never>?
+    private var analyzeTask: Task<Void, Never>?
+    private var analyzer: SpeechAnalyzer?
+
     override init() {
         super.init()
         synth.delegate = self
     }
 
-    /// Armed per session by explicit action, never automatically. Conversation
-    /// carries about 300 m; a cry of pain about 1,500 m.
+    /// Armed per session by explicit action, never automatically.
     func toggleArmed() {
         armed.toggle()
         if armed {
-            configureSession()
+            configurePlaybackSession()
             speak(id: "arm", text: "Voice armed. I will only speak when you ask me to.")
         } else {
             stopSpeaking()
-            stopListening()
+            Task { await finishDictation(commit: false) }
         }
     }
 
-    private func configureSession() {
-        // .duckOthers rather than .playback: the app never takes over the audio
-        // route, and it never emits sound unprompted.
+    private func configurePlaybackSession() {
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
         try? AVAudioSession.sharedInstance().setActive(true)
+    }
+
+    private func configureRecordSession() throws {
+        let session = AVAudioSession.sharedInstance()
+        try session.setCategory(.playAndRecord, mode: .spokenAudio,
+                                options: [.duckOthers, .defaultToSpeaker, .allowBluetoothHFP])
+        try session.setActive(true)
     }
 
     func speak(id: String, text: String) {
@@ -71,46 +77,215 @@ final class VoiceService: NSObject, ObservableObject {
 
     func toggleListening() {
         guard armed else { return }
-        if listening { stopListening(); return }
-        listening = true
+        if listening {
+            Task { await finishDictation(commit: true) }
+            return
+        }
+        Task { await startDictation() }
+    }
+
+    func stopListening() {
+        Task { await finishDictation(commit: true) }
+    }
+
+    private func startDictation() async {
         transcript = ""
         candidate = nil
         degraded = nil
 
-        Task {
+        do {
+            try await startAnalyzerPipeline()
+        } catch {
+            degrade(error)
+        }
+    }
+
+    private func startAnalyzerPipeline() async throws {
+        guard #available(iOS 26.0, *) else {
+            throw VoiceError.requiresiOS26
+        }
+        guard SpeechTranscriber.isAvailable else {
+            throw VoiceError.transcriberUnavailable
+        }
+
+        let micOK = await AVAudioApplication.requestRecordPermission()
+        guard micOK else { throw VoiceError.microphoneDenied }
+
+        let speechOK = await requestSpeechAuthorization()
+        guard speechOK else { throw VoiceError.speechDenied }
+
+        let locale = await preferredLocale()
+        let transcriber = SpeechTranscriber(locale: locale, preset: .progressiveTranscription)
+        let detector = SpeechDetector()
+
+        if let request = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
+            degraded = "Downloading on-device speech model for \(locale.identifier)…"
             do {
-                let text = try await transcribe()
-                self.transcript = text
-                self.candidate = DictationCandidate(raw: text)
-                self.listening = false
+                try await request.downloadAndInstall()
+                degraded = nil
             } catch {
-                // FM-8: degrade explicitly to touch entry. Never fail silently.
-                self.degrade(String(describing: error))
+                throw VoiceError.modelNotInstalled
+            }
+        }
+
+        try configureRecordSession()
+
+        let context = AnalysisContext()
+        context.contextualStrings[.general] = MedicalLexicon.terms
+        let analyzer = SpeechAnalyzer(modules: [detector, transcriber])
+        try await analyzer.setContext(context)
+        self.analyzer = analyzer
+
+        guard let analyzerFormat = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [transcriber, detector]) else {
+            throw VoiceError.noUsableFormat
+        }
+
+        let engine = AVAudioEngine()
+        self.engine = engine
+        let input = engine.inputNode
+        let micFormat = input.outputFormat(forBus: 0)
+        guard let converter = AVAudioConverter(from: micFormat, to: analyzerFormat) else {
+            throw VoiceError.noUsableFormat
+        }
+        converter.primeMethod = .none
+
+        let (stream, continuation) = AsyncStream<AnalyzerInput>.makeStream()
+        inputContinuation = continuation
+
+        input.removeTap(onBus: 0)
+        input.installTap(onBus: 0, bufferSize: 4096, format: micFormat) { buffer, _ in
+            if let converted = VoiceService.convert(buffer, with: converter, to: analyzerFormat) {
+                continuation.yield(AnalyzerInput(buffer: converted))
+            }
+        }
+
+        engine.prepare()
+        try engine.start()
+        listening = true
+
+        resultsTask = Task { [weak self] in
+            do {
+                for try await result in transcriber.results {
+                    let piece = String(result.text.characters)
+                    await MainActor.run {
+                        guard let self, self.listening || !piece.isEmpty else { return }
+                        if result.isFinal {
+                            if self.transcript.isEmpty {
+                                self.transcript = piece
+                            } else if !self.transcript.hasSuffix(piece) {
+                                self.transcript = (self.transcript + " " + piece)
+                                    .replacingOccurrences(of: "  ", with: " ")
+                                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                            }
+                        } else {
+                            // Volatile: show the in-progress hypothesis without committing it.
+                            self.transcript = piece
+                        }
+                    }
+                }
+            } catch {
+                await MainActor.run { self?.degrade(error) }
+            }
+        }
+
+        analyzeTask = Task { [weak self] in
+            do {
+                try await analyzer.start(inputSequence: stream)
+            } catch {
+                await MainActor.run { self?.degrade(error) }
             }
         }
     }
 
-    func stopListening() { listening = false }
+    private func finishDictation(commit: Bool) async {
+        listening = false
+        inputContinuation?.finish()
+        inputContinuation = nil
 
-    /// INTEGRATION POINT — replace with SpeechAnalyzer + SpeechTranscriber.
-    ///
-    ///   let transcriber = SpeechTranscriber(locale: .current, preset: .progressiveTranscription)
-    ///   let analyzer = SpeechAnalyzer(modules: [transcriber, SpeechDetector()])
-    ///   analyzer.context.contextualStrings = MedicalLexicon.terms
-    ///
-    /// SpeechDetector gates transcription on voice activity so it is not
-    /// always-on (bench B2 decides whether it can be left armed at all), and
-    /// contextualStrings is what makes "cefadroxil", "suzetrigine" and "MARCH"
-    /// transcribe reliably.
-    private func transcribe() async throws -> String {
-        throw VoiceError.transcriberNotConfigured
+        engine?.inputNode.removeTap(onBus: 0)
+        engine?.stop()
+        engine = nil
+
+        if #available(iOS 26.0, *) {
+            await analyzer?.cancelAndFinishNow()
+        }
+        analyzer = nil
+        resultsTask?.cancel()
+        analyzeTask?.cancel()
+        resultsTask = nil
+        analyzeTask = nil
+
+        configurePlaybackSession()
+
+        let text = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
+        if commit, !text.isEmpty {
+            candidate = DictationCandidate(raw: text)
+        }
     }
 
-    private func degrade(_ reason: String) {
+    private func preferredLocale() async -> Locale {
+        if #available(iOS 26.0, *) {
+            let wanted = [Locale(identifier: "en-GB"), Locale(identifier: "en-US"), Locale.current]
+            for loc in wanted {
+                if let match = await SpeechTranscriber.supportedLocale(equivalentTo: loc) {
+                    return match
+                }
+            }
+            if let first = await SpeechTranscriber.supportedLocales.first {
+                return first
+            }
+        }
+        return Locale(identifier: "en-GB")
+    }
+
+    private func requestSpeechAuthorization() async -> Bool {
+        await withCheckedContinuation { continuation in
+            SFSpeechRecognizer.requestAuthorization { status in
+                continuation.resume(returning: status == .authorized)
+            }
+        }
+    }
+
+    /// Audio-thread conversion. Converter is used only from the tap.
+    nonisolated private static func convert(
+        _ buffer: AVAudioPCMBuffer,
+        with converter: AVAudioConverter,
+        to format: AVAudioFormat
+    ) -> AVAudioPCMBuffer? {
+        let ratio = format.sampleRate / buffer.format.sampleRate
+        let capacity = AVAudioFrameCount(max(1, ceil(Double(buffer.frameLength) * ratio)))
+        guard let out = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: capacity) else { return nil }
+        var error: NSError?
+        var submitted = false
+        let status = converter.convert(to: out, error: &error) { _, outStatus in
+            if submitted {
+                outStatus.pointee = .noDataNow
+                return nil
+            }
+            submitted = true
+            outStatus.pointee = .haveData
+            return buffer
+        }
+        guard status != .error, error == nil, out.frameLength > 0 else { return nil }
+        return out
+    }
+
+    private func degrade(_ error: Error) {
         listening = false
-        degraded = "Speech transcriber not configured — degrading explicitly to touch entry. Sample dictation shown so the hand-off between layers stays visible; the app never fails a voice action silently."
-        transcript = DictationCandidate.sample
-        candidate = DictationCandidate(raw: DictationCandidate.sample)
+        engine?.inputNode.removeTap(onBus: 0)
+        engine?.stop()
+        engine = nil
+        inputContinuation?.finish()
+        inputContinuation = nil
+        let message: String
+        if let voiceError = error as? VoiceError {
+            message = voiceError.userMessage
+        } else {
+            message = "Speech analyzer failed — \(error.localizedDescription). Degrading to touch entry. Nothing was sent off the device."
+        }
+        degraded = message
+        candidate = nil
+        configurePlaybackSession()
     }
 
     func discardCandidate() {
@@ -119,7 +294,34 @@ final class VoiceService: NSObject, ObservableObject {
         degraded = nil
     }
 
-    enum VoiceError: Error { case transcriberNotConfigured }
+    enum VoiceError: Error {
+        case transcriberNotConfigured
+        case transcriberUnavailable
+        case requiresiOS26
+        case microphoneDenied
+        case speechDenied
+        case modelNotInstalled
+        case noUsableFormat
+
+        var userMessage: String {
+            switch self {
+            case .transcriberNotConfigured:
+                return "Speech transcriber not configured — degrading to touch entry."
+            case .transcriberUnavailable:
+                return "On-device SpeechTranscriber is not available on this device. Degrading to touch entry."
+            case .requiresiOS26:
+                return "SpeechAnalyzer needs iOS 26. Degrading to touch entry."
+            case .microphoneDenied:
+                return "Microphone permission denied. Enable it in Settings to dictate."
+            case .speechDenied:
+                return "Speech-recognition permission denied. Enable it in Settings to dictate."
+            case .modelNotInstalled:
+                return "On-device speech model is not installed and could not be downloaded. Connect to a network once, then retry. Nothing was sent off the device."
+            case .noUsableFormat:
+                return "No compatible audio format for SpeechAnalyzer. Degrading to touch entry."
+            }
+        }
+    }
 }
 
 extension VoiceService: AVSpeechSynthesizerDelegate {
@@ -131,6 +333,17 @@ extension VoiceService: AVSpeechSynthesizerDelegate {
     }
 }
 
+/// Terms the on-device transcriber should prefer. Not clinical content —
+/// vocabulary hints only. The model still must not compute or decide.
+enum MedicalLexicon {
+    static let terms: [String] = [
+        "tourniquet", "cefadroxil", "suzetrigine", "moxifloxacin", "enoxaparin",
+        "MARCH", "ATMIST", "TCCC", "packing", "junctional", "axilla",
+        "reposition", "splint", "distal pulse", "haemorrhage", "hemorrhage",
+        "pressure dressing", "chest seal", "erythema", "pouch"
+    ]
+}
+
 /// A structured candidate the language layer PROPOSES. It is not a ledger entry
 /// until the deterministic core validates and commits it, and the time stamp is
 /// generated at commit — never taken from speech.
@@ -138,8 +351,6 @@ struct DictationCandidate {
     let raw: String
     let intervention: String
     let site: String?
-
-    static let sample = "reposition onto my left side and I have marked the redness on my thigh it is wider than last time"
 
     init(raw: String) {
         self.raw = raw

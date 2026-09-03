@@ -10,7 +10,7 @@ struct VoiceScreen: View {
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Voice").font(.heavy(32)).foregroundStyle(Ink.text)
-                    Text("Gemma, on-device · 2 B parameters at 4-bit · weights loaded locally, no network")
+                    Text("SpeechAnalyzer · SpeechTranscriber · on-device. No audio leaves the phone.")
                         .font(.label(12)).foregroundStyle(Ink.mid)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -91,7 +91,7 @@ struct VoiceScreen: View {
 
             if !voice.transcript.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
-                    Kicker(text: voice.degraded == nil ? "Raw transcript — the casualty's own words" : "Sample transcript — transcriber not configured",
+                    Kicker(text: voice.listening ? "Live transcript" : "Raw transcript — the casualty's own words",
                            color: Ink.mid)
                     HStack(spacing: 12) {
                         Rectangle().fill(Ink.dim).frame(width: 4)

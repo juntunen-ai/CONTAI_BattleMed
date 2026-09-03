@@ -2,7 +2,7 @@ name: MedicalAI
 options:
   bundleIdPrefix: ai.juntunen
   deploymentTarget:
-    iOS: "18.0"
+    iOS: "26.0"
   createIntermediateGroups: true
 targets:
   MedicalAI:

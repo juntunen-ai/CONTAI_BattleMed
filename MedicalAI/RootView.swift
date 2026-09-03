@@ -48,7 +48,7 @@ struct RootView: View {
         HStack {
             Text("T+\(clock.elapsed)").foregroundStyle(Ink.body)
             Spacer()
-            Text(voice.armed ? "GEMMA · ON-DEVICE" : "MEDICALAI 0.1").foregroundStyle(Ink.dim)
+            Text(voice.armed ? "SPEECH · ON-DEVICE" : "MEDICALAI 0.1").foregroundStyle(Ink.dim)
             Spacer()
             Text("\(clock.batteryPercent)%").foregroundStyle(Ink.body)
         }
