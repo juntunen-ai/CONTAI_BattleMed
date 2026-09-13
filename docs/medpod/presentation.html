@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>BattleMed (CONTAI) · MedPod &amp; App · PoC Briefing</title>
+<style>
+  @page { size: A4 landscape; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #0B0B0C;
+    color: #EDEAE4;
+    font-family: "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .slide {
+    width: 297mm;
+    height: 210mm;
+    page-break-after: always;
+    break-after: page;
+    position: relative;
+    overflow: hidden;
+    background: #0B0B0C;
+    padding: 14mm 16mm 12mm 16mm;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+
+  .kicker {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #C43C2C;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    color: #F5F2EC;
+    max-width: 240mm;
+    margin-bottom: 10mm;
+  }
+  h1.tight { margin-bottom: 7mm; }
+  h2 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: #F5F2EC;
+    margin-bottom: 8mm;
+    max-width: 250mm;
+  }
+  .lead {
+    font-size: 17px;
+    line-height: 1.45;
+    color: #B8B4AC;
+    max-width: 230mm;
+    margin-bottom: 8mm;
+  }
+  .body {
+    font-size: 15.5px;
+    line-height: 1.45;
+    color: #C9C5BD;
+  }
+  ul.points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5.5mm;
+    flex: 1;
+  }
+  ul.points li {
+    font-size: 16px;
+    line-height: 1.4;
+    color: #E8E4DC;
+    padding-left: 7mm;
+    position: relative;
+    max-width: 255mm;
+  }
+  ul.points li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 3.5mm;
+    height: 1.5px;
+    background: #C43C2C;
+  }
+  ul.points li strong { color: #F5F2EC; font-weight: 600; }
+  ul.points li .muted { color: #8A8680; }
+
+  .footer {
+    position: absolute;
+    left: 16mm;
+    right: 16mm;
+    bottom: 7mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    color: #5A5752;
+    border-top: 1px solid #1E1E20;
+    padding-top: 3.5mm;
+  }
+  .footer .pg { color: #8A8680; }
+
+  /* Title slide */
+  .slide-title {
+    justify-content: flex-end;
+    padding-bottom: 22mm;
+  }
+  .slide-title .rule {
+    width: 28mm;
+    height: 3px;
+    background: #C43C2C;
+    margin-bottom: 8mm;
+  }
+  .slide-title h1 {
+    font-size: 42px;
+    max-width: 250mm;
+    margin-bottom: 6mm;
+  }
+  .slide-title .sub {
+    font-size: 16px;
+    color: #9A968E;
+    line-height: 1.5;
+    max-width: 210mm;
+    margin-bottom: 12mm;
+  }
+  .meta-row {
+    display: flex;
+    gap: 0;
+    border: 1px solid #2A2A2C;
+  }
+  .meta-row div {
+    flex: 1;
+    padding: 4.5mm 5mm;
+    border-right: 1px solid #2A2A2C;
+  }
+  .meta-row div:last-child { border-right: none; }
+  .meta-row dt {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6A6762;
+    margin-bottom: 2mm;
+  }
+  .meta-row dd {
+    font-size: 13.5px;
+    color: #EDEAE4;
+    font-weight: 500;
+  }
+
+  /* Big numbers */
+  .bignum-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5mm;
+    margin-top: 2mm;
+  }
+  .bignum {
+    background: #121214;
+    border: 1px solid #242426;
+    border-left: 3px solid #C43C2C;
+    padding: 6mm 5.5mm;
+  }
+  .bignum .n {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 42px;
+    font-weight: 500;
+    color: #F5F2EC;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 3mm;
+  }
+  .bignum .n small { font-size: 22px; color: #C43C2C; }
+  .bignum .l {
+    font-size: 13.5px;
+    color: #9A968E;
+    line-height: 1.35;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7mm;
+    flex: 1;
+  }
+  .card {
+    background: #121214;
+    border: 1px solid #242426;
+    padding: 6mm 6mm;
+    display: flex;
+    flex-direction: column;
+  }
+  .card .tag {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #C43C2C;
+    margin-bottom: 3mm;
+  }
+  .card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #F5F2EC;
+    margin-bottom: 4mm;
+    line-height: 1.25;
+  }
+  .card p, .card li {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #B8B4AC;
+  }
+  .card ul { list-style: none; display: flex; flex-direction: column; gap: 2.5mm; }
+  .card ul li { padding-left: 4.5mm; position: relative; }
+  .card ul li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0.55em;
+    width: 2.5mm; height: 1.5px;
+    background: #C43C2C;
+  }
+
+  table.dense {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-top: 2mm;
+  }
+  table.dense th {
+    text-align: left;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6A6762;
+    font-weight: 500;
+    padding: 3mm 4mm;
+    border-bottom: 1px solid #2A2A2C;
+    background: #121214;
+  }
+  table.dense td {
+    padding: 3.2mm 4mm;
+    border-bottom: 1px solid #1A1A1C;
+    color: #D4D0C8;
+    vertical-align: top;
+    line-height: 1.35;
+  }
+  table.dense tr:last-child td { border-bottom: none; }
+  table.dense td.num {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    color: #F5F2EC;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  table.dense td.accent {
+    color: #C43C2C;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-weight: 500;
+  }
+
+  .inv-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5mm;
+    flex: 1;
+  }
+  .inv {
+    background: #121214;
+    border: 1px solid #242426;
+    padding: 6mm 5.5mm;
+    display: flex;
+    flex-direction: column;
+  }
+  .inv .lab {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6A6762;
+    margin-bottom: 3mm;
+  }
+  .inv .n {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 36px;
+    color: #C43C2C;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 3.5mm;
+  }
+  .inv .n span { font-size: 16px; color: #8A8680; }
+  .inv h3 {
+    font-size: 15px;
+    color: #F5F2EC;
+    font-weight: 600;
+    margin-bottom: 3mm;
+    line-height: 1.25;
+  }
+  .inv p {
+    font-size: 13px;
+    color: #9A968E;
+    line-height: 1.4;
+  }
+
+  .cap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4mm;
+    flex: 1;
+  }
+  .cap {
+    background: #121214;
+    border: 1px solid #242426;
+    padding: 4.5mm 5mm;
+    display: grid;
+    grid-template-columns: 12mm 1fr;
+    gap: 3mm;
+    align-items: start;
+  }
+  .cap .id {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 14px;
+    color: #C43C2C;
+    font-weight: 600;
+  }
+  .cap h3 {
+    font-size: 15px;
+    color: #F5F2EC;
+    font-weight: 600;
+    margin-bottom: 1.5mm;
+  }
+  .cap p {
+    font-size: 12.5px;
+    color: #9A968E;
+    line-height: 1.35;
+  }
+  .cap.wide {
+    grid-column: 1 / -1;
+  }
+
+  .quote-bar {
+    border-left: 3px solid #C43C2C;
+    padding: 4mm 0 4mm 6mm;
+    margin: 2mm 0 6mm;
+    background: transparent;
+  }
+  .quote-bar p {
+    font-size: 17px;
+    color: #EDEAE4;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .lock-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 6mm;
+    align-items: stretch;
+    flex: 1;
+  }
+  .lock-mid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #C43C2C;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    gap: 3mm;
+  }
+  .lock-mid .plus {
+    width: 10mm; height: 10mm;
+    border: 1px solid #C43C2C;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .gate-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4mm;
+    flex: 1;
+  }
+  .gate {
+    background: #121214;
+    border: 1px solid #242426;
+    padding: 5mm 6mm;
+    display: grid;
+    grid-template-columns: 28mm 1fr;
+    gap: 5mm;
+    align-items: start;
+  }
+  .gate .gnum {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: #C43C2C;
+    font-weight: 600;
+  }
+  .gate h3 {
+    font-size: 15.5px;
+    color: #F5F2EC;
+    font-weight: 600;
+    margin-bottom: 2mm;
+  }
+  .gate p {
+    font-size: 13.5px;
+    color: #9A968E;
+    line-height: 1.4;
+  }
+
+  .close-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4mm;
+    margin-top: 2mm;
+  }
+  .close-list li {
+    font-size: 15.5px;
+    color: #D4D0C8;
+    line-height: 1.4;
+    padding-left: 8mm;
+    position: relative;
+  }
+  .close-list li::before {
+    content: attr(data-n);
+    position: absolute;
+    left: 0;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    color: #C43C2C;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .status-pill {
+    display: inline-block;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #C43C2C;
+    border: 1px solid #C43C2C;
+    padding: 2mm 4mm;
+    margin-bottom: 6mm;
+  }
+
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4mm;
+    margin-top: auto;
+  }
+  .stat-strip .s {
+    border-top: 1px solid #2A2A2C;
+    padding-top: 3.5mm;
+  }
+  .stat-strip .sn {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 22px;
+    color: #F5F2EC;
+    font-weight: 500;
+    margin-bottom: 1.5mm;
+  }
+  .stat-strip .sl {
+    font-size: 11.5px;
+    color: #7A7670;
+    line-height: 1.3;
+  }
+
+  .map-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5mm;
+    flex: 1;
+  }
+  .map-card {
+    background: #121214;
+    border: 1px solid #242426;
+    padding: 6mm 5.5mm;
+    display: flex;
+    flex-direction: column;
+  }
+  .map-card.dim {
+    opacity: 0.55;
+  }
+  .map-card .dn {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: #C43C2C;
+    margin-bottom: 3mm;
+  }
+  .map-card h3 {
+    font-size: 17px;
+    color: #F5F2EC;
+    font-weight: 600;
+    margin-bottom: 3mm;
+    line-height: 1.25;
+  }
+  .map-card p {
+    font-size: 13px;
+    color: #9A968E;
+    line-height: 1.4;
+    flex: 1;
+  }
+  .map-card .badge {
+    margin-top: 4mm;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6A6762;
+  }
+  .map-card.active .badge { color: #C43C2C; }
+
+
+  table.dense.bom {
+    font-size: 11.5px;
+    margin-top: 1mm;
+  }
+  table.dense.bom th {
+    font-size: 8.5px;
+    padding: 2mm 2.5mm;
+  }
+  table.dense.bom td {
+    padding: 1.8mm 2.5mm;
+    font-size: 11.5px;
+  }
+  table.dense.bom tr.subtotal td,
+  table.dense.bom tr.total td {
+    border-top: 1px solid #2A2A2C;
+    color: #F5F2EC;
+    font-weight: 600;
+  }
+  table.dense.bom td.fn-cell {
+    color: #8A8680;
+    font-size: 10.5px;
+  }
+  .footnote {
+    font-size: 11px;
+    line-height: 1.4;
+    color: #8A8680;
+    margin-top: 3.5mm;
+  }
+  .footnote strong { color: #B8B4AC; font-weight: 600; }
+  .two-col.kit {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 5mm;
+  }
+  .kit-warn {
+    margin-top: 4mm;
+    padding: 3.5mm 4.5mm;
+    border: 1px solid #3A2A28;
+    background: #141212;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: #C9C5BD;
+  }
+  .kit-warn strong { color: #C43C2C; }
+
+  .why {
+    margin-top: 3.5mm;
+    padding: 2.5mm 4mm;
+    border-left: 2px solid #C43C2C;
+    background: #121214;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #9A968E;
+  }
+  .why strong { color: #C9C5BD; font-weight: 600; }
+
+
+  .claim-lead {
+    font-size: 14.5px;
+    line-height: 1.4;
+    color: #C9C5BD;
+    max-width: 255mm;
+    margin-bottom: 4mm;
+  }
+  .claim-lead strong { color: #F5F2EC; font-weight: 600; }
+  .claim-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5mm;
+    flex: 0;
+    margin-bottom: 3.5mm;
+  }
+  .claim-cols .card ul li { font-size: 12.5px; line-height: 1.35; }
+  .claim-cols .card h3 { font-size: 15px; margin-bottom: 3mm; }
+  .claim-cols .card { padding: 4.5mm 5mm; }
+  .claim-cols .card.refuse { border-color: #3A2A28; }
+  .claim-cols .card.refuse .tag { color: #A85848; }
+  .evidence-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3.5mm;
+    margin-bottom: 3mm;
+    border-top: 1px solid #2A2A2C;
+    padding-top: 3mm;
+  }
+  .evidence-strip .e {
+    font-size: 11px;
+    line-height: 1.35;
+    color: #8A8680;
+  }
+  .evidence-strip .e strong {
+    display: block;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 12px;
+    color: #EDEAE4;
+    font-weight: 500;
+    margin-bottom: 1mm;
+  }
+  .poc-measure {
+    font-size: 11.5px;
+    line-height: 1.4;
+    color: #B8B4AC;
+    background: #121214;
+    border: 1px solid #242426;
+    padding: 2.8mm 4mm;
+    margin-bottom: 2.5mm;
+  }
+  .poc-measure strong { color: #F5F2EC; }
+  .coupled-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4.5mm;
+    flex: 1;
+  }
+  .coupled {
+    background: #121214;
+    border: 1px solid #242426;
+    padding: 4.5mm 4.5mm;
+    display: flex;
+    flex-direction: column;
+  }
+  .coupled .lab {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #C43C2C;
+    margin-bottom: 2.5mm;
+  }
+  .coupled h3 {
+    font-size: 14.5px;
+    color: #F5F2EC;
+    font-weight: 600;
+    margin-bottom: 3mm;
+    line-height: 1.25;
+  }
+  .coupled .prob, .coupled .des {
+    font-size: 12px;
+    line-height: 1.35;
+    color: #9A968E;
+    margin-bottom: 2.5mm;
+  }
+  .coupled .prob strong, .coupled .des strong { color: #D4D0C8; font-weight: 600; }
+  .coupled .hard {
+    margin-top: auto;
+    font-size: 11.5px;
+    line-height: 1.35;
+    color: #EDEAE4;
+    border-top: 1px solid #2A2A2C;
+    padding-top: 2.5mm;
+  }
+  .coupled .hard strong { color: #C43C2C; }
+  .bottom-line {
+    margin-top: 3.5mm;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #EDEAE4;
+    border-left: 2px solid #C43C2C;
+    padding: 2.5mm 4mm;
+    background: #121214;
+  }
+  .bottom-line strong { color: #F5F2EC; }
+  h2.tight-slide { font-size: 24px; margin-bottom: 4.5mm; }
+
+  .accent-line {
+    width: 100%;
+    height: 1px;
+    background: #1E1E20;
+    margin: 4mm 0 5mm;
+  }
+</style>
+</head>
+<body>
+
+<!-- 1 TITLE -->
+<section class="slide slide-title">
+  <div class="rule"></div>
+  <div class="kicker">BattleMed (CONTAI) · Harri Juntunen · PoC</div>
+  <h1>Clock, ledger, and enclosure for the 72-hour lone casualty</h1>
+  <p class="sub">A Proof-of-Concept briefing on the MedPod hardware baseline and the companion app — the physical hold and the temporal hold for a conscious casualty alone for three days — aligned with the PCC doctrinal window. Exploratory build; distribution / App Store / MDR acceptance deferred.</p>
+  <div class="meta-row">
+    <div><dt>Prepared for</dt><dd>Harri Juntunen / BattleMed (CONTAI)</dd></div>
+    <div><dt>Status</dt><dd>Proof of Concept (PoC)</dd></div>
+    <div><dt>Date</dt><dd>6 Sep 2026 · 72 h hold</dd></div>
+    <div><dt>Scope</dt><dd>Exploratory — not productisation</dd></div>
+  </div>
+</section>
+
+<!-- 2 MISSION -->
+<section class="slide">
+  <div class="kicker">01 · Mission</div>
+  <h2>One scenario. Hold rescoped to 72 hours.</h2>
+  <div class="bignum-grid">
+    <div class="bignum">
+      <div class="n">72<span> h</span></div>
+      <div class="l">Hold from point of injury — conscious, self-treating, alone; occasional buddy contact. Inside the ~72 h PCC working ceiling.</div>
+    </div>
+    <div class="bignum">
+      <div class="n">0<span> net</span></div>
+      <div class="l">No radio, cellular, or satellite in the operating state. Provisioning networked; ops are not.</div>
+    </div>
+    <div class="bignum">
+      <div class="n">UGV</div>
+      <div class="l">No aeromedical. Recovery by unmanned ground vehicle or one-person vehicle + CONTAI AutoLoader</div>
+    </div>
+  </div>
+  <div style="height:6mm"></div>
+  <ul class="points" style="flex:0">
+    <li><strong>Shelter:</strong> CONTAI MedPOD™ enclosure — Deliverable 2</li>
+    <li><strong>Doctrine:</strong> TCCC 01 May 2026 · JTS PCC CPG ID 91 · AJP-4.2 Ed A V1</li>
+    <li><strong>User training:</strong> TCCC All Service Member — 6–8 hours, at least 6 months stale</li>
+  </ul>
+  <div class="why"><strong>Why it matters:</strong> Doctrine assumes a caregiver arrives; the PoC tests whether enclosure + clock can hold a conscious solo casualty inside the ~72 h PCC window without claiming productisation.</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">02 / 20</span></div>
+</section>
+
+<!-- 3 THE GAP -->
+<section class="slide">
+  <div class="kicker">02 · The gap</div>
+  <h2>Hold sits inside the ~72-hour PCC window. The gap is solo, not duration.</h2>
+  <div class="quote-bar">
+    <p>Nearly every intervention that improves survival in prolonged care either requires a second person — or becomes actively dangerous performed alone.</p>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="tag">Doctrinal fit</div>
+      <h3>72 hours</h3>
+      <ul>
+        <li>Matches the JTS PCC working ceiling</li>
+        <li>Antibiotic prophylaxis ≤72 h ends with the hold</li>
+        <li>Prior art: Role 2 ~48 h — stretch is ~1.5×, not weeks</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="tag">Still uncovered</div>
+      <h3>Solo care</h3>
+      <ul>
+        <li>Doctrine assumes a caregiver for critical acts</li>
+        <li>Self-applied tourniquet failure without outcome checks</li>
+        <li>Only 14% arrive Role II/III with prehospital care documented</li>
+      </ul>
+    </div>
+  </div>
+  <div class="why"><strong>Why it matters:</strong> Stretch vs Role 2 (~1.5×) is modest; the uncovered gap is solo care — second-person acts and undocumented prehospital care (D1).</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">03 / 20</span></div>
+</section>
+
+<!-- 4 TWO DELIVERABLES -->
+<section class="slide">
+  <div class="kicker">03 · Programme map</div>
+  <h2>Two deliverables in scope. One as context.</h2>
+  <div class="map-row">
+    <div class="map-card dim">
+      <div class="dn">D1 · Context</div>
+      <h3>Lone Casualty Knowledge Model</h3>
+      <p>Clinical domains, KR-01 thesis, uncovered hours, and the interventions that fail alone. Source of the product thesis — not briefed here.</p>
+      <div class="badge">Context only</div>
+    </div>
+    <div class="map-card active">
+      <div class="dn">D2 · Hardware</div>
+      <h3>MedPod Hardware Baseline</h3>
+      <p>Ventilated pressure-management enclosure. Insulation, not chemical heat. Fail-open life support. Soft BOM ~USD 552 / protected 672+; powered tier optional.</p>
+      <div class="badge">This briefing</div>
+    </div>
+    <div class="map-card active">
+      <div class="dn">D3 · Software</div>
+      <h3>MVP iPhone Application</h3>
+      <p>Clock and ledger before teacher. Five capabilities. Calculation firewall. iPhone 17 Pro Max · 12 GB · on-device only.</p>
+      <div class="badge">This briefing</div>
+    </div>
+  </div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">04 / 20</span></div>
+</section>
+
+<!-- 5 THREE INVERSIONS -->
+<section class="slide">
+  <div class="kicker">04 · MedPod · Three inversions</div>
+  <h2>The intuitive capsule is wrong in three quantified ways.</h2>
+  <div class="inv-row">
+    <div class="inv">
+      <div class="lab">Inversion 1 · Sealing</div>
+      <div class="n">~34<span> min</span></div>
+      <h3>to 5% CO₂ in a sealed pod</h3>
+      <p>About an hour to unconsciousness. Ventilation is the primary life-safety system — fail-open, zero power. Nothing else kills this fast.</p>
+    </div>
+    <div class="inv">
+      <div class="lab">Inversion 2 · Heat</div>
+      <div class="n">0<span> W</span></div>
+      <h3>active heating to ≈ −10 °C</h3>
+      <p>Metabolic heat + 53 mm foam over the body and 85 mm beneath closes the balance. Chemical heat was always a 10-hour answer to a 72-hour problem (~7× short).</p>
+    </div>
+    <div class="inv">
+      <div class="lab">Inversion 3 · Real threat</div>
+      <div class="n">42–48<span> mmHg</span></div>
+      <h3>pelvis / heels on bare litter</h3>
+      <p>Pressure injury, not cold, dominates. Stage 3–4 forms well inside a week. The best insulator — a vacuum mattress — is among the worst support surfaces.</p>
+    </div>
+  </div>
+  <div class="why"><strong>Why it matters:</strong> Product order flips: ventilation integrity and pressure management first; warming almost free once insulation is right (D2 three inversions).</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">05 / 20</span></div>
+</section>
+
+<!-- 6 LIFE SUPPORT -->
+<section class="slide">
+  <div class="kicker">05 · MedPod · Life support</div>
+  <h2>A sealed pod is a coffin on a one-hour timer.</h2>
+  <ul class="points" style="flex:0; margin-bottom:6mm;">
+    <li><strong>0.22 L/min CO₂</strong> from a resting 80 kg adult into ~150–400 L free air — occupational 0.5% in ~7 min; 5% intoxication in ~34 min; LOC at ~10% / ~68 min</li>
+    <li><strong>Required ventilation:</strong> 0.5–2 L/s per casualty, fail-open, no closeable valve — structurally impossible to seal, not instrumented</li>
+    <li><strong>Face at hooded aperture</strong> so exhaled CO₂ leaves without mixing; pod then needs only trickle ventilation</li>
+    <li><strong>Counterflow recuperator</strong> (~70% effective) drops the 12.6 W trickle penalty to ~3.8 W; HME recovers ~11.5 W and 287 g water/day</li>
+    <li><strong>Excluded:</strong> combustion / catalytic heaters inside the volume; air-activated chemical warmers add ~36% to O₂ demand</li>
+  </ul>
+  <div class="stat-strip">
+    <div class="s"><div class="sn">0.2%</div><div class="sl">of day 1 occupied by the entire sealed-pod timeline</div></div>
+    <div class="s"><div class="sn">4,320</div><div class="sl">minutes in the 72-hour mission</div></div>
+    <div class="s"><div class="sn">54 L/min</div><div class="sl">naive vent at −10 °C costs ~40 W — over half metabolic budget</div></div>
+    <div class="s"><div class="sn">24%</div><div class="sl">of heat budget is respiration — HME is best $/g intervention</div></div>
+  </div>
+  <div class="why"><strong>Why it matters:</strong> CO₂ kills in ~minutes when sealed; power must never be required to breathe — fail-open vents are life safety, not a comfort feature (D2).</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">06 / 20</span></div>
+</section>
+
+
+<!-- 7 COUPLED CONSTRAINTS -->
+<section class="slide">
+  <div class="kicker">06 · MedPod · Coupled constraints</div>
+  <h2 class="tight-slide">Three coupled constraints — how the design answers.</h2>
+  <div class="coupled-row">
+    <div class="coupled">
+      <div class="lab">1 · CO₂ / ventilation</div>
+      <h3>Seal vs breathe</h3>
+      <p class="prob"><strong>Problem:</strong> sealed ~150 L → ~34 min to 5% CO₂, ~1 h LOC; fastest killer.</p>
+      <p class="des"><strong>Design:</strong> fail-open vents (no closeable valve); face at hooded aperture; trickle 0.5–2 L/s; counterflow recuperator (~70%) so vent doesn’t steal heat; HME recovers respiratory heat/water.</p>
+      <p class="hard"><strong>Hard rule:</strong> power must never be required to breathe; powered tier still fail-open.</p>
+    </div>
+    <div class="coupled">
+      <div class="lab">2 · Heating need</div>
+      <h3>72 h vs chemical heat</h3>
+      <p class="prob"><strong>Problem:</strong> HPMK chemical heat ~10 h vs 72 h (~7× short); air-activated warmers raise O₂ demand; combustion/catalytic inside = CO (no exit).</p>
+      <p class="des"><strong>Design:</strong> insulation first — ~53 mm foam over / ~85 mm under closes balance on ~70 W metabolism to ≈ −10 °C with <strong>0 W active heat</strong>; electrical heat only supplemental (powered tier) below ≈ −10 °C or collapsed metabolism, energy preferably outside occupied volume.</p>
+      <p class="hard"><strong>Thesis:</strong> active heat is last resort — never the product.</p>
+    </div>
+    <div class="coupled">
+      <div class="lab">3 · Thermal signature</div>
+      <h3>Warmth vs concealment</h3>
+      <p class="prob"><strong>Problem:</strong> hypothermia doctrine wants warmth; concealment hates a hot blob; Mylar-outward / aluminium-out creates a <strong>cold rectangle</strong> on warm ground — often more conspicuous.</p>
+      <p class="des"><strong>Design:</strong> same insulation grams buy survival <strong>and</strong> smaller ΔT to ambient; radiant barrier <strong>metal face inward</strong> across air gap (never outward as camouflage); matte outer shell; no reflective sunshade as primary cold-signature strategy; screen-off / deep-red UI for phone (KR-04).</p>
+      <p class="hard"><strong>Buy:</strong> survival + smaller ΔT with the same grams.</p>
+    </div>
+  </div>
+  <div class="bottom-line"><strong>Bottom line:</strong> Insulation settles the heat–signature conflict; fail-open vent settles the seal–life conflict; active heat is last resort, never the product thesis.</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">07 / 20</span></div>
+</section>
+
+<!-- 7 THERMAL + PRESSURE -->
+<section class="slide">
+  <div class="kicker">07 · MedPod · Thermal &amp; pressure</div>
+  <h2>Insulation, not chemical heat. Pressure injury dominates.</h2>
+  <div class="two-col">
+    <div class="card">
+      <div class="tag">Thermal</div>
+      <h3>~70 W metabolic · 24 °C interior</h3>
+      <ul>
+        <li>−10 °C: 53 mm over body / 85 mm beneath (XLPE-eq.)</li>
+        <li>−25 °C: ~80 mm / 128 mm — Arctic is a thickness decision</li>
+        <li>Base needs ~1.6× canopy R-value; ground is the sink</li>
+        <li>Blizzard bag 7.5 TOG ≈ 26 mm — ~⅓ of −10 °C need</li>
+        <li>Signature free: outer ΔT only 1.3–3.2 K; never metallise outward</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="tag">Pressure</div>
+      <h3>Vacuum mattress tension</h3>
+      <ul>
+        <li>Bare litter: pelvis ~42 mmHg, heels ~48 mmHg</li>
+        <li>“32 mmHg is safe” is a documented myth</li>
+        <li>No published unattended multi-day pressure solution (still critical inside 72 h)</li>
+        <li>Baseline: zoned foam + sacral/heel relief + mouth-inflatable tilt bladders (~USD 16, 300 g)</li>
+        <li>Largest technical risk in the concept remains</li>
+      </ul>
+    </div>
+  </div>
+  <div class="why"><strong>Why it matters:</strong> Insulation closes the heat balance on ~70 W metabolism to ≈ −10 °C; chemical heat was a 10 h answer. Pressure injury (not cold) dominates inside 72 h — tilt bladders make nursing possible alone (D1 KR-08 / D2).</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">08 / 20</span></div>
+</section>
+
+<!-- 8 ENVELOPE -->
+<section class="slide">
+  <div class="kicker">08 · MedPod · Envelope</div>
+  <h2>Mass stopped being scarce. Length binds instead.</h2>
+  <div class="bignum-grid" style="margin-bottom:6mm;">
+    <div class="bignum">
+      <div class="n">$552</div>
+      <div class="l">Soft-pod material BOM · protected 672+ · powered tier separate</div>
+    </div>
+    <div class="bignum">
+      <div class="n">47.3<span> kg</span></div>
+      <div class="l">Protected mass (soft + frame + aramid) · ~110 kg ground allowance</div>
+    </div>
+    <div class="bignum">
+      <div class="n">~10<span> s</span></div>
+      <div class="l">CONTAI AutoLoader claim — pickups, vans, ATV, snowmobile</div>
+    </div>
+  </div>
+  <table class="dense">
+    <thead>
+      <tr><th>Constraint</th><th>Old (aeromedical)</th><th>New (ground)</th><th>Design implication</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mass budget for pod</td>
+        <td class="num">~30 kg</td>
+        <td class="num accent">~110 kg</td>
+        <td>Insulation, loader frame, armour option all affordable</td>
+      </tr>
+      <tr>
+        <td>Binding dimension</td>
+        <td class="num">UH-60 rack width</td>
+        <td class="num accent">Pickup bed 1700 mm</td>
+        <td>Target ~2000 × 600 mm; modest overhang OK</td>
+      </tr>
+      <tr>
+        <td>Armour / interface</td>
+        <td class="num">Ruled out by mass</td>
+        <td class="num accent">Reopened</td>
+        <td>High-level option; AutoLoader geometry still unpublished</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="footnote" style="margin-top:3mm;"><strong>Powered tier exists</strong> (large battery + compute/display/heat) on top of the fail-open passive baseline — see BOM / Kit / Powered slides for BOM, kit, and powered affordances. Material prices indicative list only; no labour/tooling/margin.</p>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">09 / 20</span></div>
+</section>
+
+
+<!-- 9 BOM -->
+<section class="slide">
+  <div class="kicker">09 · MedPod · BOM</div>
+  <h2 class="tight">MedPod BOM — soft pod + protected.</h2>
+  <p class="footnote" style="margin-top:-4mm; margin-bottom:2mm;">Material cost only · indicative list prices · no labour, tooling, or margin · D2-verified line items</p>
+  <table class="dense bom">
+    <thead>
+      <tr><th>Item</th><th>Qty</th><th>USD</th><th>kg</th><th>Function</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>XLPE foam base, 100 mm zoned</td><td class="num">1.5 m²</td><td class="num">194</td><td class="num">7.20</td><td>R≈2.7 + sacral/heel relief</td></tr>
+      <tr><td>XLPE foam canopy, 50 mm</td><td class="num">2.0 m²</td><td class="num">129</td><td class="num">4.80</td><td>R≈1.4</td></tr>
+      <tr><td>TPU-coated nylon 6.6 ripstop</td><td class="num">6.0 m²</td><td class="num">70</td><td class="num">0.72</td><td>Shell, RF-weldable</td></tr>
+      <tr><td>Aluminised PET 12 µm</td><td class="num">2.0 m²</td><td class="num">6</td><td class="num">0.03</td><td>Radiant barrier, metal face inward</td></tr>
+      <tr><td>Counterflow recuperator</td><td class="num">1</td><td class="num">10</td><td class="num">0.25</td><td>~70% recovery, no power</td></tr>
+      <tr><td>HME respiratory</td><td class="num">3</td><td class="num">9</td><td class="num">0.02</td><td>+11.5 W, water recovery</td></tr>
+      <tr><td>Mouth-inflatable tilt bladders</td><td class="num">2</td><td class="num">16</td><td class="num">0.30</td><td>Self-offload</td></tr>
+      <tr><td>Drag handles/hardware</td><td class="num">6 pt</td><td class="num">45</td><td class="num">0.90</td><td>One-person + UGV</td></tr>
+      <tr><td>Zips/closures FR</td><td class="num">1 set</td><td class="num">35</td><td class="num">0.55</td><td>Full-length + limb ports</td></tr>
+      <tr><td>Graduated urine interface</td><td class="num">1</td><td class="num">12</td><td class="num">0.20</td><td>Master field monitor</td></tr>
+      <tr><td>Vent screens fail-open</td><td class="num">2</td><td class="num">8</td><td class="num">0.05</td><td>Cannot be closed</td></tr>
+      <tr><td>Reflective sunshade detachable</td><td class="num">1</td><td class="num">18</td><td class="num">0.35</td><td>Hot case</td></tr>
+      <tr class="subtotal"><td><strong>Subtotal soft pod</strong></td><td class="num">—</td><td class="num accent">552</td><td class="num">15.37</td><td></td></tr>
+      <tr><td>AutoLoader frame</td><td class="num">1</td><td class="num">120</td><td class="num">9.00</td><td>Rails, pick points</td></tr>
+      <tr><td>Fragment aramid 3.9 m²</td><td class="num">—</td><td class="num">unpriced</td><td class="num">22.90</td><td>Detachable</td></tr>
+      <tr class="total"><td><strong>Protected total</strong></td><td class="num">—</td><td class="num accent">672+</td><td class="num">47.27</td><td>~60 kg ground recovery</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote"><strong>Optional tiers:</strong> vacuum mattress USD 749 / 5.4 kg; alternating-pressure overlay+pump USD 400 / 2.5 kg (recommend). <strong>Reject</strong> aerogel and VIP — cost/fragility vs XLPE without commensurate field gain.</p>
+  <div class="why"><strong>Why it matters:</strong> Each line buys a physics job — foam for R-value + sacral relief, recuperator/HME for vent heat, fail-open vents for CO₂, urine interface as master field monitor, frame for AutoLoader, detachable frag for FPV threat (D2).</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">10 / 20</span></div>
+</section>
+
+<!-- 10 KIT MEDICINES & INSTRUMENTS -->
+<section class="slide">
+  <div class="kicker">10 · MedPod · Kit</div>
+  <h2 class="tight">Kit — medicines and instruments (72 h hold).</h2>
+  <p class="footnote" style="margin-top:-4mm; margin-bottom:3mm;">Separate from structural BOM · Fixed-dose cards only · Cite TCCC / JTS · Surface conflicts; do not resolve</p>
+  <div class="two-col kit">
+    <div class="card">
+      <div class="tag">Medicines · 72 h / 3 days</div>
+      <h3>Fixed-dose only</h3>
+      <ul>
+        <li><strong>Cefadroxil 1 g PO</strong> once daily × 3 — TCCC 01 May 2026. Conflict: JTS ID 24 still names moxifloxacin — surface both; do not silently pick.</li>
+        <li><strong>Analgesia:</strong> pre-portioned daily pouches × 3 (physical constraint, not a software ceiling). TCCC CWMP path; no opioids invented here.</li>
+        <li><strong>Enoxaparin 30 mg BD</strong> once haemostasis achieved and &gt;48 h expected — JTS CPG ID 36; only if criteria met.</li>
+        <li>TXA / other controlled acute resus drugs omitted from this kit page — not listed as MedPod hold field-kit line items in D1.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="tag">Instruments / consumables</div>
+      <h3>Self-care + handover</h3>
+      <ul>
+        <li>Combat-application tourniquet × ≥1 (limb)</li>
+        <li>Haemostatic / packing gauze</li>
+        <li>Splint (distal pulse checks)</li>
+        <li>External thermometer (iPhone has none — kit line item)</li>
+        <li>Graduated urine measure (also structural BOM interface)</li>
+        <li>Fitbit or equiv BLE HR — MedPod default monitoring; trend only; SpO₂ not clinical</li>
+        <li>Spare HME cartridges</li>
+        <li>Oral care kit (KR-08 nursing/morale)</li>
+        <li>Buddy-contact / handover print or QR-capable display path</li>
+      </ul>
+    </div>
+  </div>
+  <div class="kit-warn"><strong>Not a Role 2 pharmacy.</strong> PoC ships fixed-dose protocol cards only — no dose calculation in the app. Fixed doses + calculation firewall are <strong>safety architecture for PoC</strong>, not store-compliance theatre. Content is versioned and attributed; conflicts stay visible.</div>
+  <div class="why"><strong>Why it matters:</strong> Cefadroxil vs moxifloxacin conflict must stay visible (KR-09). Tourniquet outcome gates catch confident skippers. Thermometer is kit because iPhone has none; Fitbit is trend-only — SpO₂ never clinical (D1/D3).</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">11 / 20</span></div>
+</section>
+
+<!-- 11 POWERED TIER -->
+<section class="slide">
+  <div class="kicker">11 · MedPod · Powered tier</div>
+  <h2 class="tight">Powered MedPod — large battery on a fail-open baseline.</h2>
+  <p class="lead" style="margin-bottom:4mm; font-size:14.5px;">Programme decision: MedPod <strong style="color:#EDEAE4;">may</strong> carry a large battery, so electricity can be available. This is a powered tier on top of the passive envelope — not a replacement for zero-power life safety.</p>
+  <div class="two-col" style="flex:0; margin-bottom:4mm; grid-template-columns:1fr 1fr;">
+    <div class="card" style="padding:4mm 5mm;">
+      <div class="tag">Hard rules</div>
+      <ul>
+        <li><strong>Ventilation remains fail-open / zero-power</strong> — power must not be required to breathe</li>
+        <li><strong>No combustion / catalytic heater</strong> in the occupied volume (CO)</li>
+        <li><strong>Electrical heat is supplemental</strong> (below ~−10 °C or collapsed metabolism); stored energy outside occupied volume preferred</li>
+      </ul>
+    </div>
+    <div class="card" style="padding:4mm 5mm;">
+      <div class="tag">Programme note</div>
+      <ul>
+        <li>Lab PC path vs field phone — shared ledger schema</li>
+        <li>Powered tier changes BOM, mass, and emissions / signature profile</li>
+        <li>Costs below labelled <strong>TBD</strong> where unknown — no invented prices</li>
+      </ul>
+    </div>
+  </div>
+  <table class="dense bom">
+    <thead>
+      <tr><th>Powered affordance</th><th>Role</th><th>USD</th><th>Note</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Large Li battery + BMS + charge port</td><td>Pod-side power</td><td class="num accent">TBD</td><td>Sizes Wh vs heat + compute + charge budget</td></tr>
+      <tr><td>Gaming PC or equivalent</td><td>Lab/MVP local LLM + psych layer</td><td class="num accent">TBD</td><td>Lab path; not assumed in field phone ops</td></tr>
+      <tr><td>Interior display</td><td>Deep-red / low-luminance UI</td><td class="num accent">TBD</td><td>Signature discipline inside pod</td></tr>
+      <tr><td>Outward-facing cameras</td><td>SA / UGV approach</td><td class="num accent">TBD</td><td>Emissions/signature trade — field SOP</td></tr>
+      <tr><td>Resistive heating pads</td><td>Supplemental heat only</td><td class="num accent">TBD</td><td>Below ~−10 °C or collapsed metabolism</td></tr>
+      <tr><td>Alternating-pressure micro-pump</td><td>Pressure overlay</td><td class="num">~400</td><td>Already optional overlay+pump tier</td></tr>
+      <tr><td>Fitbit BLE receiver / USB dongle</td><td>Default trend sensor path</td><td class="num accent">TBD</td><td>PC lab; phone uses native BLE</td></tr>
+      <tr><td>LED task light (deep-red)</td><td>Task lighting</td><td class="num accent">TBD</td><td>Signature discipline</td></tr>
+      <tr><td>USB charge for phone / Fitbit</td><td>72 h endurance</td><td class="num accent">TBD</td><td>Across hold; battery budget item</td></tr>
+    </tbody>
+  </table>
+  <div class="why"><strong>Why it matters:</strong> Battery enables PC, display, cameras, supplemental heat — still on a fail-open vent baseline. Lab cameras ≈ RPM bedside awareness; field emissions are a signature trade (KB RPM theme / D2).</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">12 / 20</span></div>
+</section>
+
+<!-- 12 APP SIX CAPABILITIES -->
+<section class="slide">
+  <div class="kicker">12 · App MVP · Six capabilities</div>
+  <h2>A clock and a ledger before it is a teacher.</h2>
+  <div class="cap-grid">
+    <div class="cap">
+      <div class="id">C1</div>
+      <div>
+        <h3>The Clock</h3>
+        <p>Tourniquet 2 h / 6 h gates, drug intervals, q1–2 h repositioning, q6 h splint checks, dressing age. The irreplaceable function.</p>
+      </div>
+    </div>
+    <div class="cap">
+      <div class="id">C2</div>
+      <div>
+        <h3>The Ledger</h3>
+        <p>Append-only clinical record — interventions, doses, measurements — timestamps from the device, not from failing memory.</p>
+      </div>
+    </div>
+    <div class="cap">
+      <div class="id">C3</div>
+      <div>
+        <h3>Outcome-gated guidance</h3>
+        <p>Closed-set procedural cards gated on observable outcomes (e.g. distal pulse), not step confirmation.</p>
+      </div>
+    </div>
+    <div class="cap">
+      <div class="id">C4</div>
+      <div>
+        <h3>Self-measurement</h3>
+        <p>Pulse count, urine volume, radial pulse Y/N, timed cognitive task vs personal baseline — four that survive self-admin.</p>
+      </div>
+    </div>
+    <div class="cap">
+      <div class="id">C6</div>
+      <div>
+        <h3>Psychological continuity</h3>
+        <p>Nursing-as-morale, extraction log without shame (KR-07/08), timed cognitive vs baseline, procedural presence checks — continuity, not therapy.</p>
+      </div>
+    </div>
+    <div class="cap wide">
+      <div class="id">C5</div>
+      <div>
+        <h3>The Handover — DD Form 1380 / MIST</h3>
+        <p>Packet on demand and on dead-man trigger. Readable by a medic with no app and no network — screen and QR. Strongest product argument; cheap to build.</p>
+      </div>
+    </div>
+  </div>
+  <div class="why"><strong>Why it matters:</strong> Trustable clock/ledger before “smart” AI — evidence and trust gaps argue measure-first PoC; agents that follow up when no medic is present map to prompts, not replacement of care (KB / D3 KR-01).</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">13 / 20</span></div>
+</section>
+
+<!-- 13 PLATFORM CONSTRAINTS -->
+<section class="slide">
+  <div class="kicker">13 · App · Platform constraints</div>
+  <h2>What breaks the obvious design.</h2>
+  <table class="dense">
+    <thead>
+      <tr><th>Constraint</th><th>Figure / finding</th><th>Architectural consequence</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Calculation firewall</strong></td>
+        <td class="accent">Model must not compute</td>
+        <td>All arithmetic &amp; decision rules in deterministic Swift; model does language only</td>
+      </tr>
+      <tr>
+        <td><strong>No dose calc in PoC</strong></td>
+        <td class="accent">Deferred (post-PoC)</td>
+        <td>Fixed-dose cards + Swift firewall — safety architecture now; App Store 1.4.2 / publisher path later</td>
+      </tr>
+      <tr>
+        <td><strong>Speech / on-device</strong></td>
+        <td class="num">SpeechAnalyzer + SpeechTranscriber</td>
+        <td>VAD-gated; custom medical lexicon; no SFSpeechRecognizer</td>
+      </tr>
+      <tr>
+        <td><strong>Target device</strong></td>
+        <td class="num">iPhone 17 Pro Max OR gaming PC / equiv (lab MVP)</td>
+        <td>Phone: field form-factor + memory tier; PC: heavier local model + Web Bluetooth lab path</td>
+      </tr>
+      <tr>
+        <td><strong>Fitbit / wearable</strong></td>
+        <td class="accent">Default MedPod monitoring sensor</td>
+        <td>Consumer BLE HR trends; SpO₂ never clinical; ≤60 s sessions; signal loss is a finding</td>
+      </tr>
+      <tr>
+        <td><strong>Operating floor</strong></td>
+        <td class="accent">0 °C</td>
+        <td>Phone lives inside MedPod envelope (pod holds ~24 °C to ≈ −10 °C ambient)</td>
+      </tr>
+      <tr>
+        <td><strong>No network in ops</strong></td>
+        <td class="num">NFR-2</td>
+        <td>Build-time link check + runtime assertion; zero calls in operating state</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">14 / 20</span></div>
+</section>
+
+<!-- 14 HOW THEY LOCK -->
+<section class="slide">
+  <div class="kicker">14 · How they lock</div>
+  <h2>Pod holds the body. App holds the timeline.</h2>
+  <div class="lock-grid">
+    <div class="card">
+      <div class="tag">Deliverable 2</div>
+      <h3>MedPod</h3>
+      <ul>
+        <li>Ventilation integrity first</li>
+        <li>Passive thermal to ≈ −10 °C</li>
+        <li>Pressure management attempt</li>
+        <li>Thermal envelope for the phone</li>
+        <li>UGV / AutoLoader interface</li>
+      </ul>
+    </div>
+    <div class="lock-mid">
+      <div class="plus">+</div>
+      <div>Shared<br/>assumptions</div>
+    </div>
+    <div class="card">
+      <div class="tag">Deliverable 3</div>
+      <h3>MVP App</h3>
+      <ul>
+        <li>Clock across 72 hours</li>
+        <li>Ledger that outlives memory</li>
+        <li>Psychological continuity artefacts</li>
+        <li>Handover without a network</li>
+        <li>Phone field or PC lab MVP</li>
+      </ul>
+    </div>
+  </div>
+  <div style="height:5mm"></div>
+  <ul class="points" style="flex:0">
+    <li><strong>Neither replaces doctrine</strong> — both cite TCCC / JTS; content is versioned and attributed</li>
+    <li><strong>Both assume no network in ops</strong> — enclosure physics and app architecture share the isolation premise</li>
+    <li><strong>Dependency is mutual:</strong> phone needs the pod’s 0 °C floor fix; pod needs the app’s pressure / drug / dressing clocks</li>
+  </ul>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">15 / 20</span></div>
+</section>
+
+<!-- 15 PSYCHOLOGICAL LAYER -->
+<section class="slide">
+  <div class="kicker">15 · App · Psychological layer</div>
+  <h2>Continuity under failed extraction — not therapy.</h2>
+  <div class="lead" style="margin-bottom:5mm;">KR-07: extraction is recurring, not terminal. KR-08: the nursing schedule is morale architecture. Gap: no CPG for suicide / psych deterioration — we refuse to invent one.</div>
+  <div class="cap-grid" style="flex:1;">
+    <div class="cap"><div class="id">01</div><div><h3>Nursing-as-morale</h3><p>Reposition, ankle pumps, oral care as one calm artefact (KR-08).</p></div></div>
+    <div class="cap"><div class="id">02</div><div><h3>Extraction log</h3><p>Recurring events; failed attempt does not reset clock or shame (KR-07).</p></div></div>
+    <div class="cap"><div class="id">03</div><div><h3>Cognitive micro-task</h3><p>Timed vs personal baseline; score deltas only — no diagnosis.</p></div></div>
+    <div class="cap"><div class="id">04</div><div><h3>Presence checks</h3><p>Procedural prompts; fixed spoken strings — never open chat therapy.</p></div></div>
+    <div class="cap"><div class="id">05</div><div><h3>Missed-check signal</h3><p>Overdue checks remain a soft deterioration indicator.</p></div></div>
+    <div class="cap"><div class="id">06</div><div><h3>Night / dark UI</h3><p>Screen-off rest; deep-red; no bright psych animations.</p></div></div>
+  </div>
+  <ul class="points" style="flex:0; margin-top:4mm; gap:3mm;">
+    <li><strong>We refuse:</strong> suicide-risk scoring claims · AI-companion romance · unsupervised psych diagnosis · crisis UI that pretends to treat</li>
+  </ul>
+  <div class="why"><strong>Why it matters:</strong> KR-07/08 make nursing and extraction continuity the morale layer — not therapy. No CPG for psych deterioration; PoC measures continuity artefacts, not clinical efficacy.</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">16 / 20</span></div>
+</section>
+
+<!-- 16 SENSORS & PLATFORMS -->
+<section class="slide">
+  <div class="kicker">16 · Sensors &amp; platforms</div>
+  <h2>Fitbit default. Four self-measures still load-bearing. PC lab vs phone field.</h2>
+  <table class="dense">
+    <thead>
+      <tr><th>Layer</th><th>MVP choice</th><th>Constraint</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Default sensor</strong></td>
+        <td class="accent">Fitbit / equiv BLE HR</td>
+        <td>Trend only; SpO₂ never clinical logic; loss of signal is a finding</td>
+      </tr>
+      <tr>
+        <td><strong>Self-measures</strong></td>
+        <td class="num">Pulse · urine · radial Y/N · cognitive</td>
+        <td>Four that survive self-admin — wearable does not replace them</td>
+      </tr>
+      <tr>
+        <td><strong>PC / lab MVP</strong></td>
+        <td class="num">Gaming PC / equiv</td>
+        <td>Web Bluetooth or USB dongle; heavier local LLM; shared ledger schema</td>
+      </tr>
+      <tr>
+        <td><strong>Phone field</strong></td>
+        <td class="num">iPhone 17 Pro Max</td>
+        <td>Scheduled ≤60 s foreground; emissions / signature discipline applies here</td>
+      </tr>
+      <tr>
+        <td><strong>Hold</strong></td>
+        <td class="accent">72 hours</td>
+        <td>Clock, prophylaxis window, and presentation figures aligned</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="why"><strong>Why it matters:</strong> Screen light is visible 0.5–2 km ground / 1–6 km airborne — screen-off rest is clinical for field phone; lab PC may differ (D1 KR-04).</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">17 / 20</span></div>
+</section>
+
+
+<!-- SURVIVABILITY CLAIMS -->
+<section class="slide">
+  <div class="kicker">17 · Survivability claims</div>
+  <h2 class="tight-slide">Survivability — what we claim and what we refuse.</h2>
+  <p class="claim-lead"><strong>No validated “X% more survive with MedPod + app.”</strong> Claiming one would be marketing. Gain = avoided specific failure modes.</p>
+  <div class="claim-cols">
+    <div class="card">
+      <div class="tag">WILL say (PoC)</div>
+      <h3>Scoped mechanisms only</h3>
+      <ul>
+        <li>Applies to casualties who already cleared the acute filter (conscious, haemorrhage controlled enough to self-treat)</li>
+        <li>Targets post-acute killers doctrine ignores for <em>solo</em> care: asphyxia-from-sealing, hypothermia from thin bags / 10 h chemical heat, missed nursing clocks, self-aid TQ errors, missing handover (only 14% documented)</li>
+        <li>Pod+app can improve odds on those mechanisms; measure proxies in PoC</li>
+      </ul>
+    </div>
+    <div class="card refuse">
+      <div class="tag">WILL NOT say</div>
+      <h3>No blanket % · no Role 2 replace</h3>
+      <ul>
+        <li>A single survivability % for all battlefield wounded</li>
+        <li>Fixes truncal/junctional haemorrhage (~majority of potentially survivable bleeds)</li>
+        <li>Eliminates pressure injury (largest residual risk)</li>
+        <li>Replaces Role 2 / surgery; or treats psych/suicide (no CPG)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="evidence-strip">
+    <div class="e"><strong>~2.6% · extremity HE</strong> Of all battlefield deaths ≈ extremity haemorrhage a lone casualty might self-treat (Eastridge stack · D1)</div>
+    <div class="e"><strong>~63–65% · self-TQ</strong> Lower-limb self-TQ success; common error = skip distal pulse (D1)</div>
+    <div class="e"><strong>~1 in 5 · UGV</strong> UGV retrieval success; extraction recurring (KR-07)</div>
+    <div class="e"><strong>~10%→~30%</strong> Evac stretch mortality is about time to surgery — not this product</div>
+  </div>
+  <div class="poc-measure"><strong>PoC measure:</strong> hypothermia on recovery · Stage 2+ sores by 72 h · TQ verified occlusion · prophylaxis completed · handover completeness — then <em>model</em> a delta, don’t invent one.</div>
+  <div class="why"><strong>Why it matters:</strong> Evidence gap (KB: AI health tools under-evaluated) — PoC measures, does not claim clinical efficacy.</div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">18 / 20</span></div>
+</section>
+
+<!-- 17 GATES -->
+<section class="slide">
+  <div class="kicker">18 · Gates &amp; open questions</div>
+  <h2>PoC learning goals — measure before claiming.</h2>
+  <div class="gate-list">
+    <div class="gate">
+      <div class="gnum">SAFE</div>
+      <div>
+        <h3>Model must not unsupervised-decide</h3>
+        <p>Safety architecture, not store policy: human confirmation on every clinically consequential action; language proposes, Swift commits. Unsupervised clinical AI is refused in PoC.</p>
+      </div>
+    </div>
+    <div class="gate">
+      <div class="gnum">BENCH</div>
+      <div>
+        <h3>Ventilation &amp; thermal bench</h3>
+        <p>Prove fail-open CO₂ path and insulation balance with measurements — every MedPod number is still a calculation until bench. Prior art max ~48 h Role 2; HPMK heat 10 h; 72 h is stretch, not fantasy.</p>
+      </div>
+    </div>
+    <div class="gate">
+      <div class="gnum">UX</div>
+      <div>
+        <h3>Clock + ledger + Fitbit session + psych continuity</h3>
+        <p>Prove trustable timers/ledger before “smart” features; Fitbit ≤60 s trend sessions; six psych artefacts without therapy claims. Evidence gap: PoC must measure, not claim efficacy.</p>
+      </div>
+    </div>
+    <div class="gate">
+      <div class="gnum">DEFER</div>
+      <div>
+        <h3>Post-PoC only</h3>
+        <p>App Store / publisher / EU MDR class · powered-tier Wh sizing · AutoLoader geometry · distribution. Fixed-dose firewall stays; store gate is not the PoC hardest problem.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">19 / 20</span></div>
+</section>
+
+<!-- 18 CLOSE -->
+<section class="slide">
+  <div class="kicker">19 · Close</div>
+  <div class="status-pill">PoC briefing — exploratory prototype experiments</div>
+  <h2>Prototype experiments next</h2>
+  <ul class="close-list">
+    <li data-n="01">Bench ventilation (fail-open CO₂ path) and thermal balance vs D2 calculations — measure, do not claim.</li>
+    <li data-n="02">Clock + ledger UX on phone and/or lab PC — prove timers and append-only record before teacher features.</li>
+    <li data-n="03">Fitbit (or equiv) ≤60 s BLE trend session — lab Web Bluetooth path; SpO₂ never clinical.</li>
+    <li data-n="04">Psychological continuity artefacts (KR-07/08) — six items + hard refusals; continuity, not therapy.</li>
+    <li data-n="05">Powered-tier smoke test: battery + display + optional cameras in lab; vent still fail-open; signature SOP for field later.</li>
+    <li data-n="06">Pressure residual: tilt-bladder usability + optional alternating overlay; AutoLoader geometry when CONTAI data arrives.</li>
+  </ul>
+  <div class="accent-line"></div>
+  <p class="body" style="color:#8A8680; font-size:13px;">BattleMed (CONTAI) · Harri Juntunen · PoC · Deliverables 2 (MedPod Hardware Baseline) &amp; 3 (MVP Application Spec) · 6 September 2026 · Figures tagged for provenance in source documents; nothing yet bench-validated. App Store / MDR / distribution deferred.</p>
+  <div class="footer"><span>BattleMed (CONTAI) · PoC · 72 h · 6 Sep 2026</span><span class="pg">20 / 20</span></div>
+</section>
+
+</body>
+</html>

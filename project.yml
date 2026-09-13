@@ -4,24 +4,46 @@ options:
   deploymentTarget:
     iOS: "26.0"
   createIntermediateGroups: true
+packages:
+  LlamaSwift:
+    url: https://github.com/mattt/llama.swift
+    from: "2.10549.0"
 targets:
   MedicalAI:
     type: application
     platform: iOS
     sources:
       - MedicalAI
+    entitlements:
+      path: MedicalAI/MedicalAI.entitlements
+      properties:
+        com.apple.developer.kernel.increased-memory-limit: true
+    dependencies:
+      - package: LlamaSwift
+        product: LlamaSwift
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: ai.juntunen.medicalai
         DEVELOPMENT_TEAM: 647W3RAYL3
         CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_ENTITLEMENTS: MedicalAI/MedicalAI.entitlements
         MARKETING_VERSION: "0.1"
         TARGETED_DEVICE_FAMILY: "1"
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: MedicalAI
+        INFOPLIST_KEY_CFBundleDisplayName: BattleMed
         INFOPLIST_KEY_UIUserInterfaceStyle: Dark
         INFOPLIST_KEY_UIRequiresFullScreen: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_NSMicrophoneUsageDescription: Dictation of clinical notes into the local ledger. Audio is processed on device and never transmitted.
         INFOPLIST_KEY_NSSpeechRecognitionUsageDescription: On-device transcription of dictated clinical notes. Nothing is sent off the device.
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+schemes:
+  MedicalAI:
+    build:
+      targets:
+        MedicalAI: all
+    run:
+      config: Debug
+    archive:
+      config: Release

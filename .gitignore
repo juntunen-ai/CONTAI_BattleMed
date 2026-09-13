@@ -11,3 +11,7 @@ DerivedData/
 
 # macOS
 .DS_Store
+
+# Model weights (never commit)
+*.gguf
+Models/

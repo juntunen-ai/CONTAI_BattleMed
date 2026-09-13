@@ -46,10 +46,10 @@ struct ProtocolBundle {
             name: "Cefadroxil 1 g PO",
             citation: "TCCC 01 May 2026 — conflicts with JTS CPG ID 24 (2021)",
             question: "Take one fixed-dose pouch now.",
-            note: "TCCC moved to cefadroxil; the JTS infection-prevention guideline still specifies moxifloxacin. Both are shown with their dates. The application does not resolve the conflict and performs no arithmetic.",
-            affirm: "Taken · pouch 2 of 7",
+            note: "TCCC moved to cefadroxil; the JTS infection-prevention guideline still specifies moxifloxacin. Both are shown with their dates. The application does not resolve the conflict and performs no arithmetic. Kit sized for a 72-hour hold — three daily pouches, not seven.",
+            affirm: "Taken · pouch of 3-day kit",
             deny: "Cannot take orally",
-            spoken: "Antibiotic. Take one cefadroxil pouch, one gram, by mouth, once daily. This is a fixed dose. No calculation is performed. Note that the joint trauma system infection guideline from twenty twenty-one still specifies moxifloxacin; both sources are shown with their dates, and a clinician decides."
+            spoken: "Antibiotic. Take one cefadroxil pouch, one gram, by mouth, once daily. This is a fixed dose. No calculation is performed. The kit covers three days. Note that the joint trauma system infection guideline from twenty twenty-one still specifies moxifloxacin; both sources are shown with their dates, and a clinician decides."
         ),
         "packing": Card(
             id: "packing",
@@ -64,19 +64,59 @@ struct ProtocolBundle {
         "vitals": Card(
             id: "vitals",
             name: "Vitals session",
-            citation: "Foreground session · target 60 s",
+            citation: "Foreground session · ≤60 s · Fitbit trend optional",
             question: "Count your pulse for thirty seconds, twice.",
-            note: "Blood oxygen is not used clinically and missing signal is never imputed. Loss of signal is recorded as a finding, because signal quality falls exactly as shock develops.",
+            note: "Wearable HR (Fitbit or equivalent) is trend only when paired. SpO₂ is never used clinically and missing signal is never imputed — loss of signal is recorded as a finding. Self-count remains load-bearing.",
             affirm: "Session complete",
             deny: "Cannot complete",
-            spoken: "Vitals session. Count your pulse for thirty seconds. Then check for a pulse at your wrist and tell me present or absent."
+            spoken: "Vitals session. Count your pulse for thirty seconds. Then check for a pulse at your wrist and tell me present or absent. Any wearable reading is a trend only. Oxygen saturation is not used for decisions."
+        ),
+        "oral": Card(
+            id: "oral",
+            name: "Oral care",
+            citation: "Nursing schedule · q12 h · KR-08",
+            question: "Have you cleaned your mouth and taken a small sip if allowed?",
+            note: "Part of nursing-as-morale architecture. Calm, non-shaming. Continuity of body care preserves agency under prolonged hold.",
+            affirm: "Oral care done",
+            deny: "Cannot complete now",
+            spoken: "Oral care. Clean your mouth gently. If you can take fluids, take a small sip. This is part of the schedule that keeps you going. There is no shame if you need to defer — log it and continue."
+        ),
+        "cognitive": Card(
+            id: "cognitive",
+            name: "Cognitive check",
+            citation: "Timed micro-task · personal baseline only",
+            question: "Complete the timed serial-three task.",
+            note: "Stores latency and correctness deltas against your personal baseline. No diagnosis labels. No impairment claims. Swift owns the timer and score.",
+            affirm: "Task completed",
+            deny: "Cannot attempt now",
+            spoken: "Cognitive check. You will subtract three from a starting number, repeatedly, against a short timer. Your first successful run sets a personal baseline. Later runs store only how you compare to yourself. This is not a diagnosis."
+        ),
+        "extraction": Card(
+            id: "extraction",
+            name: "Extraction attempt",
+            citation: "KR-07 · recurring, not terminal",
+            question: "Log this extraction attempt outcome.",
+            note: "Extraction is recurring hope under failed attempts. A failed or deferred attempt does not reset the 72-hour mission clock and does not shame. Next attempt remains possible; continue the schedule.",
+            affirm: "Attempt succeeded / deferred logged",
+            deny: "Attempt failed — continue schedule",
+            spoken: "Extraction attempt. Log what happened. If it failed or was deferred, the mission clock does not reset. The next attempt remains possible. Continue the nursing schedule."
+        ),
+        "presence": Card(
+            id: "presence",
+            name: "Presence check-in",
+            citation: "Procedural · fixed strings only",
+            question: "Name three things you can feel right now.",
+            note: "Closed prompt. Not therapy. Not a diagnosis. Voice uses fixed spoken strings only — never model-generated psych content.",
+            affirm: "Named three things",
+            deny: "Skip for now",
+            spoken: "Presence check. Name three things you can feel right now. Then look at the next gate on the clock. This is a short procedural pause, not a therapy session."
         )
     ]
 
     /// Fixed doses. A lookup table by design: no weight-based calculation, no
     /// arithmetic, and nothing patient-specific.
     static let fixedDoses: [(String, String, String)] = [
-        ("Cefadroxil", "1 g PO once daily", "TCCC 01 May 2026"),
+        ("Cefadroxil", "1 g PO once daily · 3-day kit", "TCCC 01 May 2026"),
         ("Enoxaparin", "30 mg BD once haemostasis achieved", "JTS CPG ID 36"),
         ("Analgesia", "One pre-portioned pouch per scheduled interval", "TCCC 01 May 2026")
     ]
