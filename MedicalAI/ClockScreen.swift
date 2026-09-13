@@ -176,8 +176,21 @@ struct CardScreen: View {
         case "vitals":
             clock.lastVitals = clock.minute
             ledger.append(minute: clock.minute, name: "Vitals session",
-                          detail: "HR 124, RR 26, radial present. SpO₂ signal lost — not imputed.",
+                          detail: "Self-count HR. Fitbit trend optional. SpO₂ signal lost — not imputed.",
                           provenance: .device)
+        case "oral":
+            clock.lastOral = clock.minute
+            ledger.append(minute: clock.minute, name: "Oral care",
+                          detail: "Nursing schedule q12 h completed", provenance: .casualty)
+        case "extraction":
+            clock.logExtractionAttempt(outcome: "succeeded_or_deferred")
+            ledger.append(minute: clock.minute, name: "Extraction attempt",
+                          detail: "Logged as succeeded or deferred. Mission clock not reset. Attempts: \(clock.extractionAttempts)",
+                          provenance: .casualty)
+        case "presence":
+            ledger.append(minute: clock.minute, name: "Presence check-in",
+                          detail: "Named three things · procedural, not therapy",
+                          provenance: .casualty)
         default:
             ledger.append(minute: clock.minute, name: card.name,
                           detail: card.affirm + ". Source conflict displayed to user.",
@@ -189,9 +202,20 @@ struct CardScreen: View {
     private func deny() {
         voice.stopSpeaking()
         UINotificationFeedbackGenerator().notificationOccurred(.warning)
-        ledger.append(minute: clock.minute, name: "Outcome not confirmed",
-                      detail: "\(card.name): \(card.deny). Added to buddy-contact list.",
-                      provenance: .device)
+        if card.id == "extraction" {
+            clock.logExtractionAttempt(outcome: "failed")
+            ledger.append(minute: clock.minute, name: "Extraction attempt failed",
+                          detail: "Failed — continue schedule. Clock not reset. Attempts: \(clock.extractionAttempts)",
+                          provenance: .casualty)
+        } else if card.id == "oral" {
+            ledger.append(minute: clock.minute, name: "Oral care deferred",
+                          detail: "Cannot complete now · logged without shame",
+                          provenance: .casualty)
+        } else {
+            ledger.append(minute: clock.minute, name: "Outcome not confirmed",
+                          detail: "\(card.name): \(card.deny). Added to buddy-contact list.",
+                          provenance: .device)
+        }
         close()
     }
 }

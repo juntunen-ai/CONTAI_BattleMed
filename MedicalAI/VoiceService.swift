@@ -219,7 +219,11 @@ final class VoiceService: NSObject, ObservableObject {
 
         let text = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
         if commit, !text.isEmpty {
-            candidate = DictationCandidate(raw: text)
+            if let structured = await GemmaService.shared.structure(text) {
+                candidate = structured
+            } else {
+                candidate = DictationCandidate(raw: text)
+            }
         }
     }
 
@@ -351,9 +355,11 @@ struct DictationCandidate {
     let raw: String
     let intervention: String
     let site: String?
+    let structuredByModel: Bool
 
     init(raw: String) {
         self.raw = raw
+        self.structuredByModel = false
         let s = raw.lowercased()
         let kinds: [(String, String)] = [
             ("reposition", "Reposition"), ("tourniquet", "Tourniquet check"),
@@ -374,6 +380,7 @@ struct DictationCandidate {
         [("Intervention", intervention),
          ("Site", site ?? "Not stated"),
          ("Time", "Device-generated on commit — not from speech"),
-         ("Provenance", "Casualty's own dictated words")]
+         ("Provenance", "Casualty's own dictated words"),
+         ("Structuring", structuredByModel ? "Gemma on-device (proposal only)" : "Keyword fallback")]
     }
 }

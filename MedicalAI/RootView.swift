@@ -32,9 +32,14 @@ struct RootView: View {
                 tabBar
             }
 
-            if let id = openCard, let card = ProtocolBundle.cards[id] {
-                CardScreen(card: card, close: { openCard = nil })
-                    .transition(.opacity)
+            if let id = openCard {
+                if id == "cognitive" {
+                    CognitiveScreen(close: { openCard = nil })
+                        .transition(.opacity)
+                } else if let card = ProtocolBundle.cards[id] {
+                    CardScreen(card: card, close: { openCard = nil })
+                        .transition(.opacity)
+                }
             }
 
             if screenOff {
@@ -48,7 +53,7 @@ struct RootView: View {
         HStack {
             Text("T+\(clock.elapsed)").foregroundStyle(Ink.body)
             Spacer()
-            Text(voice.armed ? "SPEECH · ON-DEVICE" : "MEDICALAI 0.1").foregroundStyle(Ink.dim)
+            Text(voice.armed ? GemmaService.shared.chip : "BATTLEMED 0.1").foregroundStyle(Ink.dim)
             Spacer()
             Text("\(clock.batteryPercent)%").foregroundStyle(Ink.body)
         }

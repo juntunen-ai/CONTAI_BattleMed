@@ -14,6 +14,9 @@ struct MedicalAIApp: App {
                 .environmentObject(voice)
                 .preferredColorScheme(.dark)
                 .statusBarHidden(false)
+                .onAppear {
+                    GemmaService.shared.prepare()
+                }
         }
     }
 }

@@ -6,259 +6,404 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2414A05A37F4713C67D898DD /* MedicalAIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1ABDE2328442E5AADEDB23 /* MedicalAIApp.swift */; };
+		3D22E9B4FD22E7CD4FF8FE08 /* LedgerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 190A247106DD8533FF83D5B6 /* LedgerScreen.swift */; };
+		40EDA3CAD3F309318CEA7043 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3C58046D5F4B8638F6728E /* Theme.swift */; };
+		4261F79E0DD836ED87999F08 /* VoiceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1D404C2DCFD87146E7C146 /* VoiceService.swift */; };
+		5617F9FDAE5C1134049E8E51 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5E53BF67BECF66FD93FBA5 /* RootView.swift */; };
+		5B98A7F4D4F24C42B3CC0F4A /* DictationCandidateGemma.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02F5572C2679A95DAEFD71E /* DictationCandidateGemma.swift */; };
+		611C0CE936EA71FA379B7D49 /* LedgerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C596C8717CB3060820CA0DC /* LedgerStore.swift */; };
+		701607A9F4AE78F7FA3F7DDC /* CognitiveScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4339D36142C5BBF647C99 /* CognitiveScreen.swift */; };
+		74E71DD103F4DA1965678747 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF407CE608CEF4324F2D6BC6 /* Assets.xcassets */; };
+		775C194638ADE340EB4E4DBA /* VoiceScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD6595D7F5467FA41F9058 /* VoiceScreen.swift */; };
+		CEA3F1C8D5D06EEDF16B1967 /* ProtocolBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6614C934AC2860E099049386 /* ProtocolBundle.swift */; };
+		D238CA697A5315CBAC7E97A5 /* LlamaSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 53C96C608F692B5F651E17E3 /* LlamaSwift */; };
+		D52484ABA307826B4ED2AA9E /* ClockScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A32B03BD060681992EC738D /* ClockScreen.swift */; };
+		D742E3F956DF9B5D40487056 /* GemmaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B989ECE915B101ED57377A96 /* GemmaService.swift */; };
+		E55B13104BB4455812703B50 /* HandoverScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3A5523C1142D2C93A2EBF8 /* HandoverScreen.swift */; };
+		EFF9021C64D2A0F412D5CE09 /* MissionClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A0A187162F228B68A20EC8 /* MissionClock.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		A1000000000000000000AA01 /* MedicalAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MedicalAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A3A5523C1142D2C93A2EBF8 /* HandoverScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandoverScreen.swift; sourceTree = "<group>"; };
+		0C596C8717CB3060820CA0DC /* LedgerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerStore.swift; sourceTree = "<group>"; };
+		190A247106DD8533FF83D5B6 /* LedgerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerScreen.swift; sourceTree = "<group>"; };
+		5A3C58046D5F4B8638F6728E /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		5E5E53BF67BECF66FD93FBA5 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		6614C934AC2860E099049386 /* ProtocolBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolBundle.swift; sourceTree = "<group>"; };
+		8A32B03BD060681992EC738D /* ClockScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockScreen.swift; sourceTree = "<group>"; };
+		8A5AB53CD6A37B43F47B62EF /* MedicalAI.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MedicalAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		90A0A187162F228B68A20EC8 /* MissionClock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionClock.swift; sourceTree = "<group>"; };
+		9FD7522773128864DF8B9AD7 /* MedicalAI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MedicalAI.entitlements; sourceTree = "<group>"; };
+		B989ECE915B101ED57377A96 /* GemmaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GemmaService.swift; sourceTree = "<group>"; };
+		BE1ABDE2328442E5AADEDB23 /* MedicalAIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalAIApp.swift; sourceTree = "<group>"; };
+		BF407CE608CEF4324F2D6BC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C02F5572C2679A95DAEFD71E /* DictationCandidateGemma.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationCandidateGemma.swift; sourceTree = "<group>"; };
+		D8E4339D36142C5BBF647C99 /* CognitiveScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CognitiveScreen.swift; sourceTree = "<group>"; };
+		E1FD6595D7F5467FA41F9058 /* VoiceScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceScreen.swift; sourceTree = "<group>"; };
+		FC1D404C2DCFD87146E7C146 /* VoiceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		A1000000000000000000BB01 /* MedicalAI */ = {isa = PBXFileSystemSynchronizedRootGroup; path = MedicalAI; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
-		A1000000000000000000CC01 /* Frameworks */ = {
+		756347218A713689549F4264 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D238CA697A5315CBAC7E97A5 /* LlamaSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A1000000000000000000DD01 = {
+		320DDABB2B852BD3499ADDC7 /* MedicalAI */ = {
 			isa = PBXGroup;
 			children = (
-				A1000000000000000000BB01 /* MedicalAI */,
-				A1000000000000000000DD02 /* Products */,
+				BF407CE608CEF4324F2D6BC6 /* Assets.xcassets */,
+				8A32B03BD060681992EC738D /* ClockScreen.swift */,
+				D8E4339D36142C5BBF647C99 /* CognitiveScreen.swift */,
+				C02F5572C2679A95DAEFD71E /* DictationCandidateGemma.swift */,
+				B989ECE915B101ED57377A96 /* GemmaService.swift */,
+				0A3A5523C1142D2C93A2EBF8 /* HandoverScreen.swift */,
+				190A247106DD8533FF83D5B6 /* LedgerScreen.swift */,
+				0C596C8717CB3060820CA0DC /* LedgerStore.swift */,
+				9FD7522773128864DF8B9AD7 /* MedicalAI.entitlements */,
+				BE1ABDE2328442E5AADEDB23 /* MedicalAIApp.swift */,
+				90A0A187162F228B68A20EC8 /* MissionClock.swift */,
+				6614C934AC2860E099049386 /* ProtocolBundle.swift */,
+				5E5E53BF67BECF66FD93FBA5 /* RootView.swift */,
+				5A3C58046D5F4B8638F6728E /* Theme.swift */,
+				E1FD6595D7F5467FA41F9058 /* VoiceScreen.swift */,
+				FC1D404C2DCFD87146E7C146 /* VoiceService.swift */,
 			);
+			path = MedicalAI;
 			sourceTree = "<group>";
 		};
-		A1000000000000000000DD02 /* Products */ = {
+		5E42A8CDEEA367B974FD03E6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A1000000000000000000AA01 /* MedicalAI.app */,
+				8A5AB53CD6A37B43F47B62EF /* MedicalAI.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A65218C790F5CDFD8718D282 = {
+			isa = PBXGroup;
+			children = (
+				320DDABB2B852BD3499ADDC7 /* MedicalAI */,
+				5E42A8CDEEA367B974FD03E6 /* Products */,
+			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A1000000000000000000EE01 /* MedicalAI */ = {
+		1E5C65AE920497C3BCE71901 /* MedicalAI */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1000000000000000000FF02 /* Build configuration list for PBXNativeTarget "MedicalAI" */;
+			buildConfigurationList = 70ACA0A4A4C9DB807D0758B8 /* Build configuration list for PBXNativeTarget "MedicalAI" */;
 			buildPhases = (
-				A1000000000000000000CC02 /* Sources */,
-				A1000000000000000000CC01 /* Frameworks */,
-				A1000000000000000000CC03 /* Resources */,
+				39CD1149C9F298097AFB0EC6 /* Sources */,
+				FE77947EA39B4EBFECB2E0EF /* Resources */,
+				756347218A713689549F4264 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				A1000000000000000000BB01 /* MedicalAI */,
-			);
 			name = MedicalAI;
 			packageProductDependencies = (
+				53C96C608F692B5F651E17E3 /* LlamaSwift */,
 			);
 			productName = MedicalAI;
-			productReference = A1000000000000000000AA01 /* MedicalAI.app */;
+			productReference = 8A5AB53CD6A37B43F47B62EF /* MedicalAI.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		A1000000000000000000AB01 /* Project object */ = {
+		24B9EAEE346DBCC24E0E9EA4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					A1000000000000000000EE01 = {
-						CreatedOnToolsVersion = 16.2;
+					1E5C65AE920497C3BCE71901 = {
+						DevelopmentTeam = 647W3RAYL3;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = A1000000000000000000FF01 /* Build configuration list for PBXProject "MedicalAI" */;
+			buildConfigurationList = 379F86DD5324AF29F09CFD0D /* Build configuration list for PBXProject "MedicalAI" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				en,
 			);
-			mainGroup = A1000000000000000000DD01;
+			mainGroup = A65218C790F5CDFD8718D282;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A10721429FCE3F5099D8885A /* XCRemoteSwiftPackageReference "llama.swift" */,
+			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = A1000000000000000000DD02 /* Products */;
+			productRefGroup = 5E42A8CDEEA367B974FD03E6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A1000000000000000000EE01 /* MedicalAI */,
+				1E5C65AE920497C3BCE71901 /* MedicalAI */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A1000000000000000000CC03 /* Resources */ = {
+		FE77947EA39B4EBFECB2E0EF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74E71DD103F4DA1965678747 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A1000000000000000000CC02 /* Sources */ = {
+		39CD1149C9F298097AFB0EC6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D52484ABA307826B4ED2AA9E /* ClockScreen.swift in Sources */,
+				701607A9F4AE78F7FA3F7DDC /* CognitiveScreen.swift in Sources */,
+				5B98A7F4D4F24C42B3CC0F4A /* DictationCandidateGemma.swift in Sources */,
+				D742E3F956DF9B5D40487056 /* GemmaService.swift in Sources */,
+				E55B13104BB4455812703B50 /* HandoverScreen.swift in Sources */,
+				3D22E9B4FD22E7CD4FF8FE08 /* LedgerScreen.swift in Sources */,
+				611C0CE936EA71FA379B7D49 /* LedgerStore.swift in Sources */,
+				2414A05A37F4713C67D898DD /* MedicalAIApp.swift in Sources */,
+				EFF9021C64D2A0F412D5CE09 /* MissionClock.swift in Sources */,
+				CEA3F1C8D5D06EEDF16B1967 /* ProtocolBundle.swift in Sources */,
+				5617F9FDAE5C1134049E8E51 /* RootView.swift in Sources */,
+				40EDA3CAD3F309318CEA7043 /* Theme.swift in Sources */,
+				775C194638ADE340EB4E4DBA /* VoiceScreen.swift in Sources */,
+				4261F79E0DD836ED87999F08 /* VoiceService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		A1000000000000000000BA01 /* Debug */ = {
+		575AB02EBE7ACB02A0B257D1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"DEBUG=1",
 				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		A1000000000000000000BA02 /* Release */ = {
+		7F2A692E1A7D2C5A18E94286 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MedicalAI/MedicalAI.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 647W3RAYL3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = BattleMed;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Dictation of clinical notes into the local ledger. Audio is processed on device and never transmitted.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "On-device transcription of dictated clinical notes. Nothing is sent off the device.";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.juntunen.medicalai;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A9E58763B0A06E379C6088DB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				VALIDATE_PRODUCT = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
-		A1000000000000000000BA03 /* Debug */ = {
+		FCD46F8653CE2CE0EF06F3A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MedicalAI/MedicalAI.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 647W3RAYL3;
-				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = MedicalAI;
+				INFOPLIST_KEY_CFBundleDisplayName = BattleMed;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Dictation of clinical notes into the local ledger. Audio is processed on device and never transmitted.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "On-device transcription of dictated clinical notes. Nothing is sent off the device.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
-				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "ai.juntunen.medicalai";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.juntunen.medicalai;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
-		A1000000000000000000BA04 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 647W3RAYL3;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = MedicalAI;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Dictation of clinical notes into the local ledger. Audio is processed on device and never transmitted.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "On-device transcription of dictated clinical notes. Nothing is sent off the device.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIRequiresFullScreen = YES;
-				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "ai.juntunen.medicalai";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A1000000000000000000FF01 /* Build configuration list for PBXProject "MedicalAI" */ = {
+		379F86DD5324AF29F09CFD0D /* Build configuration list for PBXProject "MedicalAI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1000000000000000000BA01 /* Debug */,
-				A1000000000000000000BA02 /* Release */,
+				575AB02EBE7ACB02A0B257D1 /* Debug */,
+				A9E58763B0A06E379C6088DB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
-		A1000000000000000000FF02 /* Build configuration list for PBXNativeTarget "MedicalAI" */ = {
+		70ACA0A4A4C9DB807D0758B8 /* Build configuration list for PBXNativeTarget "MedicalAI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1000000000000000000BA03 /* Debug */,
-				A1000000000000000000BA04 /* Release */,
+				FCD46F8653CE2CE0EF06F3A6 /* Debug */,
+				7F2A692E1A7D2C5A18E94286 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A10721429FCE3F5099D8885A /* XCRemoteSwiftPackageReference "llama.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mattt/llama.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.10549.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		53C96C608F692B5F651E17E3 /* LlamaSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A10721429FCE3F5099D8885A /* XCRemoteSwiftPackageReference "llama.swift" */;
+			productName = LlamaSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = A1000000000000000000AB01 /* Project object */;
+	rootObject = 24B9EAEE346DBCC24E0E9EA4 /* Project object */;
 }

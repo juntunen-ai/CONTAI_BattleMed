@@ -10,7 +10,7 @@ struct VoiceScreen: View {
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Voice").font(.heavy(32)).foregroundStyle(Ink.text)
-                    Text("SpeechAnalyzer · SpeechTranscriber · on-device. No audio leaves the phone.")
+                    Text("SpeechAnalyzer · optional Gemma structure · on-device. No audio leaves the phone.")
                         .font(.label(12)).foregroundStyle(Ink.mid)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -29,7 +29,7 @@ struct VoiceScreen: View {
                         .padding(.top, 16)
                         .padding(.bottom, 6)
 
-                    ForEach(["tourniquet", "packing", "antibiotic"], id: \.self) { id in
+                    ForEach(["tourniquet", "packing", "antibiotic", "oral", "extraction", "presence"], id: \.self) { id in
                         if let card = ProtocolBundle.cards[id] {
                             SpeakableRow(card: card)
                         }
@@ -70,6 +70,8 @@ struct VoiceScreen: View {
     private var dictation: some View {
         VStack(alignment: .leading, spacing: 14) {
             Kicker(text: "Dictate a ledger entry")
+            Text(GemmaService.shared.chip + " · keyword fallback if weights missing")
+                .font(.label(12)).foregroundStyle(Ink.mid)
 
             FieldButton(title: voice.armed
                         ? (voice.listening ? "Listening — tap to stop" : "Dictate entry")
